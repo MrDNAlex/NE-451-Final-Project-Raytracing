@@ -2,15 +2,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define Geometry Parameters
-patternHeight = 250
-hexagonT= 250
-sphereRad = 250
+patternHeight = 125
+hexagonT= patternHeight*2/np.sqrt(3)
+sphereRad = 125
 slices = 100
 
 # PDMS Sellmeier Equation
-B1 = 1.0093
-C1 = 13185
-sellmeierPDMS = lambda x: np.sqrt(1+(B1*x**2)/(x**2-C1))
+B1_PDMS = 1.0093
+C1_PDMS = 13185
+sellmeierPDMS = lambda x: np.sqrt(1+(B1_PDMS*x**2)/(x**2-C1_PDMS))
+
+# Air Sellmeier Equation
+B1_Air = 0.05792105
+B2_Air = 0.00167917
+C1_Air = 238.0185 
+C2_Air = 57.362
+
+sellmeierAir = lambda x: 1 + B1_Air/(C1_Air - (1/x**2)) + B2_Air/(C2_Air - (1/x**2))
 
 # Define Wavelength and Height Vectors
 height = np.linspace(0, patternHeight, slices)
@@ -34,7 +42,7 @@ for h in height:
 
     q = 2.0/3.0
     
-    nEff = ((fillFactor*sellmeierPDMS(wavelength)**q) + ((1-fillFactor)*1**q))**(1/q)
+    nEff = ((fillFactor*sellmeierPDMS(wavelength)**q) + ((1-fillFactor)*sellmeierAir(wavelength/1000)**q))**(1/q)
     plt.plot(wavelength, nEff, label=f"Height % : {h*100}", color=colors[index])
     index+=1
 
