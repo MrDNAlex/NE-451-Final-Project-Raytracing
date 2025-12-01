@@ -22,7 +22,9 @@ public:
 
 	double OriginalPower;
 
-	Ray(double ox, double oy, double dx, double dy, int currentBounce = 0, double power = 1.0, int maxBounce = 5000, double currentMedium=1.0) : Origin(ox, oy), Direction(dx, dy)
+	double Wavelength;
+
+	Ray(double ox, double oy, double dx, double dy, double wavelength = 500, int currentBounce = 0, double power = 1.0, int maxBounce = 5000, double currentMedium=1.0) : Origin(ox, oy), Direction(dx, dy)
 	{
 		this->Direction.Normalize();
 		this->CurrentMedium = currentMedium;
@@ -30,6 +32,7 @@ public:
 		this->MaxBounce = maxBounce;
 		this->Power = power;
 		this->OriginalPower = power;
+		this->Wavelength = wavelength;
 		this->Index = 0;
 	}
 
@@ -65,6 +68,7 @@ public:
 		j["CurrentBounce"] = CurrentBounce;
 		j["MaxBounce"] = MaxBounce;
 		j["Power"] = Power;
+		j["Wavelength"] = Wavelength;
 		j["CurrentMedium"] = CurrentMedium;
 		j["Index"] = Index;
 

@@ -594,44 +594,21 @@ double SellmeierNano(double wavelength)
 
 int main()
 {
-	//std::vector<double> microns = linspace(0.1, 4, 1000);
-	//std::vector<double> nanos = linspace(100, 4000, 1000);
-	//
-	//std::cout << "Sellmeier Equation Data Generation" << std::endl;
-	//
-	//for (int i = 0; i < microns.size(); i++)
-	//{
-	//	double wavelength = microns[i];
-	//	double n = SellmeierMicron(wavelength);
-	//	std::cout << "Wavelength (um): " << wavelength << " Refractive Index: " << n << std::endl;
-	//}
-	//
-	//for (int i = 0; i < nanos.size(); i++)
-	//{
-	//	double wavelength = nanos[i];
-	//	double n = SellmeierNano(wavelength);
-	//	std::cout << "Wavelength (nm): " << wavelength << " Refractive Index: " << n << std::endl;
-	//}
-
 	// Functions to Run
-
 	//RunMaxCaptureAngleWaveguide();
 	//RunQDInternalReflection();
 	//RunRealLifeTests();
 	//RunWaveCalculations();
 
-	SolarSource source = SolarSource(1000);
+	SolarSource source = SolarSource(0, 0, 0, -1, 1000);
 
-	std::vector<double> waves = source.GenerateWavelengths();
+	std::vector<Ray> waves = source.GenerateRays();
 
 	for (int i = 0; i < waves.size(); i++)
 	{
-		double wavelength = waves[i];
-		double n = SellmeierNano(wavelength);
-		std::cout << "Wavelength (nm): " << wavelength << " Refractive Index: " << n << std::endl;
+		Ray ray = waves[i];
+		
 	}
-
-
 
 	std::cout << "Press ENTER to exit...";
 	std::cin.get();

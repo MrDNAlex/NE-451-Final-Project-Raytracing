@@ -98,6 +98,14 @@
     <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="10DegGaussian.json" />
+    <None Include="20DegGaussian.json" />
+    <None Include="30DegGaussian.json" />
+    <None Include="40DegGaussian.json" />
+    <None Include="50DegGaussian.json" />
+    <None Include="60DegGaussian.json" />
+    <None Include="70DegGaussian.json" />
+    <None Include="80DegGaussian.json" />
     <None Include="AM15_spectrum.json" />
     <None Include="packages.config" />
   </ItemGroup>

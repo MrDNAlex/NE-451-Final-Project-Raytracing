@@ -10,6 +10,9 @@
     <Filter Include="RaySource">
       <UniqueIdentifier>{2986aea8-f715-409c-83e1-353c528dd4e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Distributions">
+      <UniqueIdentifier>{7565515f-0931-4db6-aa19-81d1e73e4566}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mirror.h">
@@ -43,9 +46,40 @@
       <Filter>RaySource</Filter>
     </ClInclude>
     <ClInclude Include="SolarSource.h" />
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="RayHit.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="AM15_spectrum.json" />
+    <None Include="10DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="20DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="30DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="40DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="50DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="60DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="70DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="80DegGaussian.json">
+      <Filter>Distributions</Filter>
+    </None>
+    <None Include="AM15_spectrum.json">
+      <Filter>Distributions</Filter>
+    </None>
   </ItemGroup>
 </Project>

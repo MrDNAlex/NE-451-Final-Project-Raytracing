@@ -55,6 +55,20 @@ public:
 		}
 	}
 
+	Vec2 Rotate(double degrees)
+	{
+		double pi = 3.14159265358979323846;
+		double theta = degrees * pi / 180.0;
+
+		double cs = std::cos(theta);
+		double sn = std::sin(theta);
+
+		return Vec2{
+			this->X * cs - this->Y * sn,
+			this->X * sn + this->Y * cs
+		};
+	}
+
 	Vec2 operator+(const Vec2& o) const
 	{
 		return { X + o.X, Y + o.Y };
