@@ -17,6 +17,8 @@ public:
 
 	double RefractiveIndex;
 
+	std::function<double> RefractiveIndexFunction;
+
 	Segment(double x1, double y1, double x2, double y2, double refractiveIndex) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex)
 	{
 	}
@@ -95,7 +97,8 @@ public:
 		double transmitSin = (n1 / n2) * incidentSin;
 
 		if (transmitSin >= 1.0)
-			return Reflect(ray); // Total internal reflection
+			// Total internal reflection
+			return Reflect(ray); 
 		
 		double transmissionCos = std::sqrt(std::max(0.0, 1.0 - transmitSin * transmitSin));
 

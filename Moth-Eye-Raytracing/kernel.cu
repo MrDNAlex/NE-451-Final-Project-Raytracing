@@ -584,12 +584,25 @@ double SellmeierMicron(double wavelength)
 	return sqrt(1 + (B1 * wavelength * wavelength) / (wavelength * wavelength - C1));
 }
 
-double SellmeierNano(double wavelength)
+double SellmeierPDMS(double wavelength_nm)
 {
+	double wavelengthSqr = wavelength_nm * wavelength_nm;
 	double B1 = 1.0093;
-	double C1 = 13.185;
+	double C1 = 13185;
+	
+	double nPDMS = sqrt(1 + (B1 * wavelengthSqr) / (wavelengthSqr - C1));
 
-	return sqrt(1 + (B1 * wavelength * wavelength) / (wavelength * wavelength - C1));
+	return nPDMS;
+}
+
+double GetRefractiveIndexPDMS(double x, double y, double wavelength)
+{
+	double heightFrac = (250.0 - y)/250.0;
+
+	double nAir = 1.0;
+	double nPDMS = SellmeierPDMS(wavelength);
+
+	return nAir + (nPDMS - nAir) * heightFrac;
 }
 
 int main()
@@ -607,7 +620,6 @@ int main()
 	for (int i = 0; i < waves.size(); i++)
 	{
 		Ray ray = waves[i];
-		
 	}
 
 	std::cout << "Press ENTER to exit...";

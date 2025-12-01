@@ -48,7 +48,7 @@ public:
 
 	Ray Clone()
 	{
-		Ray newRay(this->Origin.X, this->Origin.Y, this->Direction.X, this->Direction.Y, this->CurrentBounce, this->Power, this->MaxBounce);
+		Ray newRay(this->Origin.X, this->Origin.Y, this->Direction.X, this->Direction.Y, this->Wavelength, this->CurrentBounce, this->Power, this->MaxBounce);
 		newRay.CurrentMedium = this->CurrentMedium;
 		newRay.Index = this->Index;
 		return newRay;
