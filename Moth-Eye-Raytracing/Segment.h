@@ -17,10 +17,19 @@ public:
 
 	double RefractiveIndex;
 
-	std::function<double> RefractiveIndexFunction;
+	std::function<double(double)> RefractiveIndexFunction;
 
-	Segment(double x1, double y1, double x2, double y2, double refractiveIndex) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex)
+	Segment(double x1, double y1, double x2, double y2, double refractiveIndex, std::function<double(double)> refractiveIndexFunc = nullptr) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex)
 	{
+		this->RefractiveIndexFunction = refractiveIndexFunc;
+	}
+
+	double GetRefractiveIndex(double wavelength)
+	{
+		if (this->RefractiveIndexFunction != nullptr)
+			return RefractiveIndexFunction(wavelength);
+		else
+			return RefractiveIndex;
 	}
 
 	Vec2 GetNormal(bool left = true)
@@ -86,7 +95,7 @@ public:
 		Vec2 direction = ray->Direction;
 
 		double n1 = ray->CurrentMedium;
-		double n2 = this->RefractiveIndex;
+		double n2 = GetRefractiveIndex(ray->Wavelength);
 
 		if (direction.Dot(normal) > 0)
 			normal = normal * -1.0;
