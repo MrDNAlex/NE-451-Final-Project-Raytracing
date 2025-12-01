@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{da820d96-0b6a-4478-9b05-090083d14031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RaySource">
+      <UniqueIdentifier>{2986aea8-f715-409c-83e1-353c528dd4e4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Mirror.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="QuantumDot.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Segment.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Target.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Wave.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ConeLight.h">
+      <Filter>RaySource</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>RaySource</Filter>
+    </ClInclude>
+    <ClInclude Include="PointSource.h">
+      <Filter>RaySource</Filter>
+    </ClInclude>
+    <ClInclude Include="RaySource.h">
+      <Filter>RaySource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

@@ -79,8 +79,35 @@
   <ItemGroup>
     <CudaCompile Include="kernel.cu" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConeLight.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Mirror.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="PointSource.h" />
+    <ClInclude Include="QuantumDot.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="RayHit.h" />
+    <ClInclude Include="RaySource.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Segment.h" />
+    <ClInclude Include="Target.h" />
+    <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Wave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.4.targets" />
+    <Import Project="packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets" Condition="Exists('packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets'))" />
+  </Target>
 </Project>
