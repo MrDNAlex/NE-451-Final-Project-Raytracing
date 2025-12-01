@@ -13,6 +13,7 @@
 #include "QuantumDot.h"
 #include "DirectionalLight.h"
 #include "ConeLight.h"
+#include "SolarSource.h"
 
 std::vector<double> linspace(double start, double end, int num) {
 	std::vector<double> result;
@@ -574,15 +575,63 @@ void RunRealLifeTests()
 	}
 }
 
+//This is in 
+double SellmeierMicron(double wavelength)
+{
+	double B1 = 1.0093;
+	double C1 = 0.013185;
+
+	return sqrt(1 + (B1 * wavelength * wavelength) / (wavelength * wavelength - C1));
+}
+
+double SellmeierNano(double wavelength)
+{
+	double B1 = 1.0093;
+	double C1 = 13.185;
+
+	return sqrt(1 + (B1 * wavelength * wavelength) / (wavelength * wavelength - C1));
+}
 
 int main()
 {
+	//std::vector<double> microns = linspace(0.1, 4, 1000);
+	//std::vector<double> nanos = linspace(100, 4000, 1000);
+	//
+	//std::cout << "Sellmeier Equation Data Generation" << std::endl;
+	//
+	//for (int i = 0; i < microns.size(); i++)
+	//{
+	//	double wavelength = microns[i];
+	//	double n = SellmeierMicron(wavelength);
+	//	std::cout << "Wavelength (um): " << wavelength << " Refractive Index: " << n << std::endl;
+	//}
+	//
+	//for (int i = 0; i < nanos.size(); i++)
+	//{
+	//	double wavelength = nanos[i];
+	//	double n = SellmeierNano(wavelength);
+	//	std::cout << "Wavelength (nm): " << wavelength << " Refractive Index: " << n << std::endl;
+	//}
+
 	// Functions to Run
 
 	//RunMaxCaptureAngleWaveguide();
 	//RunQDInternalReflection();
-	RunRealLifeTests();
+	//RunRealLifeTests();
 	//RunWaveCalculations();
+
+	SolarSource source = SolarSource(1000);
+
+	std::vector<double> waves = source.GenerateWavelengths();
+
+	for (int i = 0; i < waves.size(); i++)
+	{
+		double wavelength = waves[i];
+		double n = SellmeierNano(wavelength);
+		std::cout << "Wavelength (nm): " << wavelength << " Refractive Index: " << n << std::endl;
+	}
+
+
 
 	std::cout << "Press ENTER to exit...";
 	std::cin.get();

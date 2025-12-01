@@ -42,8 +42,10 @@
     <ClInclude Include="RaySource.h">
       <Filter>RaySource</Filter>
     </ClInclude>
+    <ClInclude Include="SolarSource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="AM15_spectrum.json" />
   </ItemGroup>
 </Project>

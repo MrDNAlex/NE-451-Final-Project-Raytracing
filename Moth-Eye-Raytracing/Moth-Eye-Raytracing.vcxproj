@@ -92,11 +92,13 @@
     <ClInclude Include="RaySource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Segment.h" />
+    <ClInclude Include="SolarSource.h" />
     <ClInclude Include="Target.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AM15_spectrum.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
