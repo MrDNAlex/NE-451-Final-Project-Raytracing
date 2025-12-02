@@ -41,7 +41,6 @@ for h in height:
     print(fillFactor)
 
     q = 2.0/3.0
-    #nEff = ((fillFactor*sellmeierPDMS(wavelength)) + ((1-fillFactor)*sellmeierAir(wavelength/1000)))
     nEff = ((fillFactor*sellmeierPDMS(wavelength)**q) + ((1-fillFactor)*sellmeierAir(wavelength/1000)**q))**(1/q)
     plt.plot(wavelength, nEff, label=f"Height % : {h*100}", color=colors[index])
     index+=1
