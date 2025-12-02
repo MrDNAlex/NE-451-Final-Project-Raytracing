@@ -12,6 +12,12 @@ public:
 
 	double Y;
 
+	Vec2()
+	{
+		this->X = 0.0;
+		this->Y = 0.0;
+	}
+
 	Vec2(double x, double y)
 	{
 		this->X = x;

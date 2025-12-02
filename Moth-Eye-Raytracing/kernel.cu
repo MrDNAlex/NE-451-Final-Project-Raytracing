@@ -656,15 +656,6 @@ int main()
 	//RunRealLifeTests();
 	//RunWaveCalculations();
 
-	//SolarSource source = SolarSource(0, 0, 0, -1, 1000);
-	//
-	//std::vector<Ray> waves = source.GenerateRays();
-	//
-	//for (int i = 0; i < waves.size(); i++)
-	//{
-	//	Ray ray = waves[i];
-	//}
-
 	GaussianDistribution gaus = GaussianDistribution(0, 5);
 
 	Segment seg = Segment(0, 0, 1, 0, [](double wavelength) { return 1.0; });

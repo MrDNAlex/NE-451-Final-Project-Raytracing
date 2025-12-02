@@ -4,6 +4,8 @@
 #include <random>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include "ObjectNode.h"
+#include <limits>
 using json = nlohmann::json;
 
 struct FresnelCoeffs
@@ -16,11 +18,69 @@ class Object
 {
 public:
 
+	class ObjectBounds
+	{
+	public:
+		Vec2 MinBound;
+
+		Vec2 MaxBound;
+
+		ObjectBounds()
+		{
+			MinBound = Vec2(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
+			MaxBound = Vec2(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+		}
+
+		void GrowToInclude(Segment segment)
+		{
+			MinBound.X = std::min(MinBound.X, std::min(segment.A.X, segment.B.X));
+			MinBound.Y = std::min(MinBound.Y, std::min(segment.A.Y, segment.B.Y));
+
+			MaxBound.X = std::max(MaxBound.X, std::max(segment.A.X, segment.B.X));
+			MaxBound.Y = std::max(MaxBound.Y, std::max(segment.A.Y, segment.B.Y));
+		}
+
+		//Create an Intersect Function
+	};
+
+	class ObjectNode
+	{
+	public:
+
+		ObjectNode* LeftNode;
+
+		ObjectNode* RightNode;
+
+		Object* Root;
+
+		std::vector<Segment*> Segments;
+
+		ObjectBounds Bounds;
+
+		ObjectNode(Object* root)
+		{
+			Segments = std::vector<Segment*>();
+			LeftNode = nullptr;
+			RightNode = nullptr;
+			Root = root;
+		}
+
+		~ObjectNode()
+		{
+			if (LeftNode != nullptr)
+				delete LeftNode;
+			if (RightNode != nullptr)
+				delete RightNode;
+		}
+	};
+
 	std::vector<Segment> Segments;
 
 	std::string Type;
 
-	Object()
+	ObjectNode Root;
+
+	Object() : Root(this)
 	{
 		Segments = std::vector<Segment>();
 		Type = "Object";
@@ -29,6 +89,27 @@ public:
 	void AddSegment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndex)
 	{
 		Segments.emplace_back(x1, y1, x2, y2, refractiveIndex);
+	}
+
+	void BVH()
+	{
+		std::vector<Segment*> segmentPointers = std::vector<Segment*>();
+		ObjectBounds bounds = ObjectBounds();
+
+		for (Segment& segment : Segments)
+		{
+			bounds.GrowToInclude(segment);
+			segmentPointers.push_back(&segment);
+		}
+
+		Root = ObjectNode(this);
+		Root.Bounds = bounds;
+		Root.Segments = segmentPointers;
+	}
+
+	void Split()
+	{
+		//Needs to be Implemented
 	}
 
 	RayHit Intersect(Ray* ray)
