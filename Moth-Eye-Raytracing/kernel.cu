@@ -83,7 +83,7 @@ Scene CreateWaveguideBlock(std::string name, int waveguideLayers, double startX 
 
 		Object* obj = new Object();
 
-		obj->AddSegment(startX, wy, endX, wy, n);
+		obj->AddSegment(startX, wy, endX, wy, [n](double) {return n;});
 
 		scene.AddObject(obj);
 	}
