@@ -51,6 +51,10 @@
     <ClInclude Include="RayHit.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
+    <ClInclude Include="DisturbedSegment.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussianDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

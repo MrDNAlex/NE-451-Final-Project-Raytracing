@@ -19,9 +19,8 @@ public:
 
 	std::function<double(double)> RefractiveIndexFunction;
 
-	Segment(double x1, double y1, double x2, double y2, double refractiveIndex, std::function<double(double)> refractiveIndexFunc = nullptr) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex)
+	Segment(double x1, double y1, double x2, double y2, double refractiveIndex, std::function<double(double)> refractiveIndexFunc = nullptr) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex), RefractiveIndexFunction(refractiveIndexFunc)
 	{
-		this->RefractiveIndexFunction = refractiveIndexFunc;
 	}
 
 	double GetRefractiveIndex(double wavelength)

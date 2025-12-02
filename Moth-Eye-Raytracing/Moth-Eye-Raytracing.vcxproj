@@ -82,7 +82,9 @@
   <ItemGroup>
     <ClInclude Include="ConeLight.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="DisturbedSegment.h" />
     <ClInclude Include="Frame.h" />
+    <ClInclude Include="GaussianDistribution.h" />
     <ClInclude Include="Mirror.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PointSource.h" />
