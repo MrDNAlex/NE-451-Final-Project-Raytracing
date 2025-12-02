@@ -23,13 +23,13 @@ public:
 			double x2 = this->Center.X + radius * cos(theta[(i + 1) % resolution]);
 			double y2 = this->Center.Y + radius * sin(theta[(i + 1) % resolution]);
 
-			this->AddSegment(x1, y1, x2, y2, 1.0);
+			this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0; });
 		}
 	}
 
 	std::vector<Ray> InteractWithRay(Segment* segment, Ray* ray) override
 	{
-		int randInt = randomInt(0, this->Segments.size()-1);
+		int randInt = randomInt(0, this->Segments.size() - 1);
 
 		Segment randomSegment = this->Segments[randInt];
 

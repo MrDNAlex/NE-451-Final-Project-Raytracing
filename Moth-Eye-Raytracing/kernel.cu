@@ -667,9 +667,8 @@ int main()
 
 	GaussianDistribution gaus = GaussianDistribution(0, 5);
 
-	Segment seg = Segment(0, 0, 1, 0, 1.0);
-	DisturbedSegment distSeg = DisturbedSegment(0.0, 0.0, 1.0, 0.0, 1.0, &gaus);
-
+	Segment seg = Segment(0, 0, 1, 0, [](double wavelength) { return 1.0; });
+	DisturbedSegment distSeg = DisturbedSegment(0.0, 0.0, 1.0, 0.0, [](double wavelength) { return 1.0; }, &gaus);
 
 	for (int i = 0; i < 100; i++)
 	{

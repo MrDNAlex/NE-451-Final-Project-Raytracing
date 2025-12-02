@@ -15,20 +15,15 @@ public:
 
 	Vec2 B;
 
-	double RefractiveIndex;
-
 	std::function<double(double)> RefractiveIndexFunction;
 
-	Segment(double x1, double y1, double x2, double y2, double refractiveIndex, std::function<double(double)> refractiveIndexFunc = nullptr) : A(x1, y1), B(x2, y2), RefractiveIndex(refractiveIndex), RefractiveIndexFunction(refractiveIndexFunc)
+	Segment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndexFunc) : A(x1, y1), B(x2, y2), RefractiveIndexFunction(refractiveIndexFunc)
 	{
 	}
 
 	double GetRefractiveIndex(double wavelength)
 	{
-		if (this->RefractiveIndexFunction != nullptr)
-			return RefractiveIndexFunction(wavelength);
-		else
-			return RefractiveIndex;
+		return RefractiveIndexFunction(wavelength);
 	}
 
 	Vec2 GetNormal(bool left = true)
@@ -53,7 +48,7 @@ public:
 
 		if (std::abs(denom) <= EPSILON)
 			// Parallel lines
-			return RayHit(false, 0.0, nullptr); 
+			return RayHit(false, 0.0, nullptr);
 
 		double invDenom = 1.0 / denom;
 		Vec2 aToOrigin = A - ray->Origin;
@@ -63,7 +58,7 @@ public:
 
 		if (t < EPSILON || (s < 0.0 || s > 1.0))
 			// No intersection
-			return RayHit(false, 0.0, this); 
+			return RayHit(false, 0.0, this);
 
 		return RayHit(true, t, nullptr);
 	}
@@ -106,8 +101,8 @@ public:
 
 		if (transmitSin >= 1.0)
 			// Total internal reflection
-			return Reflect(ray); 
-		
+			return Reflect(ray);
+
 		double transmissionCos = std::sqrt(std::max(0.0, 1.0 - transmitSin * transmitSin));
 
 		Vec2 newDirection = direction * (n1 / n2) + normal * ((n1 / n2) * incidentCos - transmissionCos);
@@ -122,7 +117,7 @@ public:
 		json j;
 		j["A"] = A.ToJSON();
 		j["B"] = B.ToJSON();
-		j["RefractiveIndex"] = RefractiveIndex;
+		j["RefractiveIndex"] = GetRefractiveIndex(500);
 		return j;
 	}
 };

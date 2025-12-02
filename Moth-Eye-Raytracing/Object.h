@@ -26,7 +26,7 @@ public:
 		Type = "Object";
 	}
 
-	void AddSegment(double x1, double y1, double x2, double y2, double refractiveIndex)
+	void AddSegment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndex)
 	{
 		Segments.emplace_back(x1, y1, x2, y2, refractiveIndex);
 	}
@@ -68,7 +68,7 @@ public:
 		resultingRays.push_back(*ray);
 
 		segment->Transmit(&cloneRay);
-		cloneRay.CurrentMedium = segment->RefractiveIndex;
+		cloneRay.CurrentMedium = segment->GetRefractiveIndex(cloneRay.Wavelength);
 		cloneRay.CurrentBounce = 0;
 		resultingRays.push_back(cloneRay);
 
@@ -107,7 +107,7 @@ protected:
 	FresnelCoeffs GetFresnelCoefficients(Segment* segment, Ray* ray)
 	{
 		double n1 = ray->CurrentMedium;
-		double n2 = segment->RefractiveIndex;
+		double n2 = segment->GetRefractiveIndex(ray->Wavelength);
 
 		Vec2 normal = segment->GetNormal();
 

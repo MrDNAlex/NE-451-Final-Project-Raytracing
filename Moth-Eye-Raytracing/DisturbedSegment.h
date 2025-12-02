@@ -8,7 +8,7 @@ public:
 
 	GaussianDistribution* NormalDistribution; 
 
-	DisturbedSegment(double x1, double y1, double x2, double y2, double refractiveIndex, GaussianDistribution* distribution, std::function<double(double)> refractiveIndexFunc = nullptr) : Segment(x1, y1, x2, y2, refractiveIndex, refractiveIndexFunc), NormalDistribution(distribution)
+	DisturbedSegment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndexFunc, GaussianDistribution* distribution) : Segment(x1, y1, x2, y2, refractiveIndexFunc), NormalDistribution(distribution)
 	{
 	}
 
