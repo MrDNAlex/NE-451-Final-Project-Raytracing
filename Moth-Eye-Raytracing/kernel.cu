@@ -656,19 +656,43 @@ int main()
 	//RunRealLifeTests();
 	//RunWaveCalculations();
 
-	GaussianDistribution gaus = GaussianDistribution(0, 5);
+	//GaussianDistribution gaus = GaussianDistribution(0, 5);
+	//
+	//Segment seg = Segment(0, 0, 1, 0, [](double wavelength) { return 1.0; });
+	//DisturbedSegment distSeg = DisturbedSegment(0.0, 0.0, 1.0, 0.0, [](double wavelength) { return 1.0; }, &gaus);
+	//
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	Vec2 normal = seg.GetNormal();
+	//	Vec2 distNormal = distSeg.GetNormal();
+	//
+	//	std::cout << "Normal : X = " << normal.X << ", Y = " << normal.Y << std::endl;
+	//	std::cout << "Disturbed Normal : X = " << distNormal.X << ", Y = " << distNormal.Y << std::endl;
+	//}
 
-	Segment seg = Segment(0, 0, 1, 0, [](double wavelength) { return 1.0; });
-	DisturbedSegment distSeg = DisturbedSegment(0.0, 0.0, 1.0, 0.0, [](double wavelength) { return 1.0; }, &gaus);
+	Wave wave = Wave(0, 0, 1000, 0, 10000, [](double x, double y) { return MothEyeRefractiveIndex(y); }, 1, 1, 0, 0);
 
-	for (int i = 0; i < 100; i++)
+	wave.BVH();
+
+	int depth = 0;
+
+	Object::ObjectNode node = wave.Root;
+
+	for (int i = 0; i < 10; i++)
 	{
-		Vec2 normal = seg.GetNormal();
-		Vec2 distNormal = distSeg.GetNormal();
+		std::cout << "Node " << i << " : MinX = " << node.Bounds.MinBound.X << ", MaxX = " << node.Bounds.MaxBound.X << ", MinY = " << node.Bounds.MinBound.Y << ", MaxY = " << node.Bounds.MaxBound.Y << ", Depth = " << depth << ", Segments = " << node.Segments.size() << std::endl;
 
-		std::cout << "Normal : X = " << normal.X << ", Y = " << normal.Y << std::endl;
-		std::cout << "Disturbed Normal : X = " << distNormal.X << ", Y = " << distNormal.Y << std::endl;
+		if (node.LeftNode != nullptr)
+		{
+			std::cout << "Going Left" << std::endl;
+			node = *(node.LeftNode);
+		}	
+		else
+			break;
+
+		depth++;
 	}
+
 
 	std::cout << "Press ENTER to exit...";
 	std::cin.get();

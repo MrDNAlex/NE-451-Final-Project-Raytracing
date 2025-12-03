@@ -27,18 +27,51 @@ public:
 
 		ObjectBounds()
 		{
-			MinBound = Vec2(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
-			MaxBound = Vec2(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+			MinBound = Vec2(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+			MaxBound = Vec2(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
 		}
 
-		void GrowToInclude(Segment segment)
+		void GrowToInclude(Segment* segment)
 		{
-			MinBound.X = std::min(MinBound.X, std::min(segment.A.X, segment.B.X));
-			MinBound.Y = std::min(MinBound.Y, std::min(segment.A.Y, segment.B.Y));
+			MinBound.X = std::min(MinBound.X, std::min(segment->A.X, segment->B.X));
+			MinBound.Y = std::min(MinBound.Y, std::min(segment->A.Y, segment->B.Y));
 
-			MaxBound.X = std::max(MaxBound.X, std::max(segment.A.X, segment.B.X));
-			MaxBound.Y = std::max(MaxBound.Y, std::max(segment.A.Y, segment.B.Y));
+			MaxBound.X = std::max(MaxBound.X, std::max(segment->A.X, segment->B.X));
+			MaxBound.Y = std::max(MaxBound.Y, std::max(segment->A.Y, segment->B.Y));
 		}
+
+		bool LargestDimensionIsX()
+		{
+			double xLength = MaxBound.X - MinBound.X;
+			double yLength = MaxBound.Y - MinBound.Y;
+
+			return xLength >= yLength;
+		}
+
+		double GetCenterX()
+		{
+			return 0.5 * (MinBound.X + MaxBound.X);
+		}
+
+		double GetCenterY()
+		{
+			return 0.5 * (MinBound.Y + MaxBound.Y);
+		}
+
+		bool IsInLeftNode(Segment* segment, bool xLargestDim, double center)
+		{
+			if (xLargestDim)
+			{
+				double segCenterX = 0.5 * (segment->A.X + segment->B.X);
+				return segCenterX <= center;
+			}
+			else
+			{
+				double segCenterY = 0.5 * (segment->A.Y + segment->B.Y);
+				return segCenterY <= center;
+			}
+		}
+
 
 		//Create an Intersect Function
 	};
@@ -51,26 +84,28 @@ public:
 
 		ObjectNode* RightNode;
 
-		Object* Root;
+		//Object* Root;
 
 		std::vector<Segment*> Segments;
 
 		ObjectBounds Bounds;
 
-		ObjectNode(Object* root)
+		ObjectNode()
 		{
 			Segments = std::vector<Segment*>();
 			LeftNode = nullptr;
 			RightNode = nullptr;
-			Root = root;
+			//Root = root;
+			Bounds = ObjectBounds();
 		}
 
 		~ObjectNode()
 		{
-			if (LeftNode != nullptr)
-				delete LeftNode;
-			if (RightNode != nullptr)
-				delete RightNode;
+			std::cout << "Deleting ObjectNode" << std::endl;
+			//if (LeftNode != nullptr)
+			//	delete LeftNode;
+			//if (RightNode != nullptr)
+			//	delete RightNode;
 		}
 	};
 
@@ -80,7 +115,9 @@ public:
 
 	ObjectNode Root;
 
-	Object() : Root(this)
+	const int MAX_DEPTH = 10;
+
+	Object() : Root()
 	{
 		Segments = std::vector<Segment>();
 		Type = "Object";
@@ -93,22 +130,65 @@ public:
 
 	void BVH()
 	{
-		std::vector<Segment*> segmentPointers = std::vector<Segment*>();
-		ObjectBounds bounds = ObjectBounds();
-
 		for (Segment& segment : Segments)
 		{
-			bounds.GrowToInclude(segment);
-			segmentPointers.push_back(&segment);
+			Root.Bounds.GrowToInclude(&segment);
+			Root.Segments.push_back(&segment);
 		}
 
-		Root = ObjectNode(this);
-		Root.Bounds = bounds;
-		Root.Segments = segmentPointers;
+		Split(Root, 0);
 	}
 
-	void Split()
+	void Split(ObjectNode& parent, int depth = 0)
 	{
+		//Base Case
+		if (depth == MAX_DEPTH || parent.Segments.size() <= 1)
+			return;
+
+		bool isSplitX = parent.Bounds.LargestDimensionIsX();
+		double center = isSplitX ? parent.Bounds.GetCenterX() : parent.Bounds.GetCenterY();
+
+		std::vector<Segment*> leftSegments;
+		std::vector<Segment*> rightSegments;
+
+		for (Segment* segment : parent.Segments)
+		{
+			bool isInLeftNode = parent.Bounds.IsInLeftNode(segment, isSplitX, center);
+			if (isInLeftNode)
+			{
+				leftSegments.push_back(segment);
+			}
+			else
+			{
+				rightSegments.push_back(segment);
+			}
+				
+		}
+
+		if (leftSegments.empty() || rightSegments.empty())
+		{
+			std::cout << "Warning: BVH Split resulted in empty node at depth " << depth << std::endl;
+			return;
+		}
+
+		parent.LeftNode = new ObjectNode();
+		parent.RightNode = new ObjectNode();
+
+		for (Segment* segment : leftSegments)
+		{
+			parent.LeftNode->Bounds.GrowToInclude(segment);
+			parent.LeftNode->Segments.push_back(segment);
+		}
+
+		for (Segment* segment : rightSegments)
+		{
+			parent.RightNode->Bounds.GrowToInclude(segment);
+			parent.RightNode->Segments.push_back(segment);
+		}
+
+		Split(*parent.LeftNode, depth + 1);
+		Split(*parent.RightNode, depth + 1);
+
 		//Needs to be Implemented
 	}
 
