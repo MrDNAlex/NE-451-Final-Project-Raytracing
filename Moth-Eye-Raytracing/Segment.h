@@ -5,6 +5,7 @@
 #include "Ray.h"
 #include "cmath"
 #include <nlohmann/json.hpp>
+#include "PerturbanceGenerator.h"
 using json = nlohmann::json;
 
 class Segment
@@ -17,7 +18,9 @@ public:
 
 	std::function<double(double)> RefractiveIndexFunction;
 
-	Segment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndexFunc) : A(x1, y1), B(x2, y2), RefractiveIndexFunction(refractiveIndexFunc)
+	PerturbanceGenerator* PerturbanceGen;
+
+	Segment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndexFunc, PerturbanceGenerator* perturbanceGen) : A(x1, y1), B(x2, y2), RefractiveIndexFunction(refractiveIndexFunc), PerturbanceGen(perturbanceGen)
 	{
 	}
 
@@ -26,7 +29,12 @@ public:
 		return RefractiveIndexFunction(wavelength);
 	}
 
-	Vec2 GetNormal(bool left = true)
+	double GetPerturbance()
+	{
+		PerturbanceGen->GeneratePerturbance();
+	}
+
+	Vec2 GetNormal(bool left = true, bool perturb = false)
 	{
 		Vec2 dir = B - A;
 		Vec2 normal = Vec2(0, 0);
@@ -35,6 +43,9 @@ public:
 			normal = Vec2(-dir.Y, dir.X);
 		else
 			normal = Vec2(dir.Y, -dir.X);
+
+		if (perturb)
+			normal = normal.Rotate(GetPerturbance());
 
 		normal.Normalize();
 		return normal;
@@ -70,7 +81,7 @@ public:
 		Vec2 newOrigin = ray->GetIntersectionPosition(hit.Distance);
 
 		Vec2 direction = ray->Direction;
-		Vec2 normal = GetNormal();
+		Vec2 normal = GetNormal(true, true);
 
 		direction.Normalize();
 		normal.Normalize();
@@ -85,7 +96,7 @@ public:
 	{
 		RayHit hit = Intersect(ray);
 		Vec2 newOrigin = ray->GetIntersectionPosition(hit.Distance);
-		Vec2 normal = GetNormal();
+		Vec2 normal = GetNormal(true, true);
 		Vec2 direction = ray->Direction;
 
 		double n1 = ray->CurrentMedium;

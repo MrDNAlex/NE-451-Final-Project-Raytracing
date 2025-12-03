@@ -1,5 +1,6 @@
 #pragma once
 #include "Segment.h"
+#include "ConstantPerturbance.h"
 class ObjectBounds
 {
 public:
@@ -15,10 +16,10 @@ public:
 		MaxBound(std::numeric_limits<double>::lowest(),
 			std::numeric_limits<double>::lowest()),
 		Edges{
-			Segment(0,0,0,0, [](double) { return 1.0; }),
-			Segment(0,0,0,0, [](double) { return 1.0; }),
-			Segment(0,0,0,0, [](double) { return 1.0; }),
-			Segment(0,0,0,0, [](double) { return 1.0; })
+			Segment(0,0,0,0, [](double) { return 1.0; }, new ConstantPerturbance(0)),
+			Segment(0,0,0,0, [](double) { return 1.0; }, new ConstantPerturbance(0)),
+			Segment(0,0,0,0, [](double) { return 1.0; }, new ConstantPerturbance(0)),
+			Segment(0,0,0,0, [](double) { return 1.0; }, new ConstantPerturbance(0))
 			}
 	{
 	}
@@ -31,10 +32,10 @@ public:
 		MaxBound.X = std::max(MaxBound.X, std::max(segment->A.X, segment->B.X));
 		MaxBound.Y = std::max(MaxBound.Y, std::max(segment->A.Y, segment->B.Y));
 
-		Edges[0] = Segment(MinBound.X, MinBound.Y, MaxBound.X, MinBound.Y, [](double) {return 1.0; });
-		Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; });
-		Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; });
-		Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; });
+		Edges[0] = Segment(MinBound.X, MinBound.Y, MaxBound.X, MinBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
+		Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
+		Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
+		Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
 	}
 
 	bool LargestDimensionIsX()

@@ -14,7 +14,6 @@
 #include "QuantumDot.h"
 #include "DirectionalLight.h"
 #include "ConeLight.h"
-#include "DisturbedSegment.h"
 #include "Utilities.h"
 #include "ConstantWavelengthGenerator.h"
 #include "AM15GWavelengthGenerator.h"

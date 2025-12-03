@@ -13,7 +13,6 @@
 #include "QuantumDot.h"
 #include "DirectionalLight.h"
 #include "ConeLight.h"
-#include "DisturbedSegment.h"
 #include "FYDPSims.h"
 #include "NE451Sims.h"
 

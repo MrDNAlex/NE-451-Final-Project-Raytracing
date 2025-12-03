@@ -84,18 +84,20 @@
   <ItemGroup>
     <ClInclude Include="AM15GWavelengthGenerator.h" />
     <ClInclude Include="ConeLight.h" />
+    <ClInclude Include="ConstantPerturbance.h" />
     <ClInclude Include="ConstantWavelengthGenerator.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="DisturbedSegment.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="FYDPSims.h" />
     <ClInclude Include="GaussianDistribution.h" />
     <ClInclude Include="Mirror.h" />
     <ClInclude Include="NE451Sims.h" />
+    <ClInclude Include="NormalPerturbance.h" />
     <ClInclude Include="NormalWavelengthGenerator.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectBounds.h" />
     <ClInclude Include="ObjectNode.h" />
+    <ClInclude Include="PerturbanceGenerator.h" />
     <ClInclude Include="PointSource.h" />
     <ClInclude Include="QuantumDot.h" />
     <ClInclude Include="Ray.h" />

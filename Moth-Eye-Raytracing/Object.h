@@ -223,9 +223,8 @@ protected:
 		double n1 = ray->CurrentMedium;
 		double n2 = segment->GetRefractiveIndex(ray->Wavelength);
 
-		Vec2 normal = segment->GetNormal();
+		Vec2 normal = segment->GetNormal(true, true);
 
-		normal.Normalize();
 		ray->Direction.Normalize();
 
 		double incidentCos = -normal.Dot(ray->Direction);

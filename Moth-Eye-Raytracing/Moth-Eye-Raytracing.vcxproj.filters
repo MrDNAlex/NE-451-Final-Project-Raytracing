@@ -53,9 +53,6 @@
     <ClInclude Include="RayHit.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vec2.h" />
-    <ClInclude Include="DisturbedSegment.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="GaussianDistribution.h" />
     <ClInclude Include="ObjectBounds.h">
       <Filter>Objects</Filter>
@@ -78,6 +75,9 @@
     <ClInclude Include="WavelengthGenerator.h">
       <Filter>WavelengthGenerators</Filter>
     </ClInclude>
+    <ClInclude Include="PerturbanceGenerator.h" />
+    <ClInclude Include="ConstantPerturbance.h" />
+    <ClInclude Include="NormalPerturbance.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
