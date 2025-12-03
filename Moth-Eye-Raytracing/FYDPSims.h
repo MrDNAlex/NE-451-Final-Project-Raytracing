@@ -14,9 +14,10 @@
 #include "QuantumDot.h"
 #include "DirectionalLight.h"
 #include "ConeLight.h"
-#include "SolarSource.h"
 #include "DisturbedSegment.h"
 #include "Utilities.h"
+#include "ConstantWavelengthGenerator.h"
+#include "AM15GWavelengthGenerator.h"
 
 double MothEyeRefractiveIndex(double height)
 {
@@ -115,7 +116,7 @@ void QDInternalWaveUnitCell(int QDs, int rays)
 	for (int i = 1; i < qdPositionsX.size() - 1; i++)
 	{
 		scene.AddObject(new QuantumDot(qdPositionsX[i], -100, qdRadius, QDResolution));
-		scene.AddRaySource(new PointSource(qdPositionsX[i], -100, rays, 1.41));
+		scene.AddRaySource(new PointSource(qdPositionsX[i], -100, rays, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Rendering : " << name;
@@ -165,7 +166,7 @@ void ConeWaveUnitCell(int QDs, int rays)
 		double bx = endX;
 		double by = endY;
 
-		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, rays, 1.41));
+		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, rays, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Render" << std::endl;
@@ -219,7 +220,7 @@ void MaxCaptureAngleWaveguide(int waveguideLayers, int numberOfAngles, double en
 		scene.AddObject(new Mirror(startX, 1400.0, startX, 0));
 		scene.AddObject(new Mirror(endX, 1400.0, endX, 0));
 
-		scene.AddRaySource(new DirectionalLight(xStart, yStart, 9900, 300, 1));
+		scene.AddRaySource(new DirectionalLight(xStart, yStart, 9900, 300, 1, new ConstantWavelengthGenerator(550)));
 
 		scene.Render(false, false, false);
 
@@ -296,7 +297,7 @@ void ConeWaveguide(int QDs, int waveguideLayers, int raysPerCone = 1000, bool us
 		double bx = endX;
 		double by = 0;
 
-		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, raysPerCone, 1.41));
+		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, raysPerCone, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Rendering : " << name << "... ";
@@ -334,7 +335,7 @@ void ConeWaveguideUnitCell(int QDs, int waveguideLayers, int raysPerCone = 1000,
 		double bx = endX;
 		double by = 0;
 
-		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, raysPerCone, 1.41));
+		scene.AddRaySource(new ConeLight(ox, oy, ax, ay, bx, by, raysPerCone, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Rendering : " << name << "... ";
@@ -369,7 +370,7 @@ void QDWaveguideUnitCell(int QDs, int waveguideLayers, int raysPerQD = 1000, boo
 		double oy = -100;
 
 		scene.AddObject(new QuantumDot(ox, oy, qdRadius, QDResolution));
-		scene.AddRaySource(new PointSource(ox, oy, raysPerQD, 1.41));
+		scene.AddRaySource(new PointSource(ox, oy, raysPerQD, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Rendering : " << name << "... ";
@@ -404,7 +405,7 @@ void QDWaveguide(int QDs, int waveguideLayers, int raysPerQD = 1000, bool useMot
 		double oy = -100;
 
 		scene.AddObject(new QuantumDot(ox, oy, qdRadius, QDResolution));
-		scene.AddRaySource(new PointSource(ox, oy, raysPerQD, 1.41));
+		scene.AddRaySource(new PointSource(ox, oy, raysPerQD, new ConstantWavelengthGenerator(550), 1.41));
 	}
 
 	std::cout << "Rendering : " << name << "... ";
@@ -468,7 +469,7 @@ void RealLifeTestUnitCell(int QDs, int waveguideLayers, double angle, int raysPe
 	double xStart = -(cos(radians) * emitterLength) + endX * 0.95;
 	double yStart = sin(radians) * emitterLength + sourceHeight;
 
-	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, true));
+	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), true));
 
 	std::vector<double> qdPositionsX = linspace(startX, endX, QDs + 2);
 
@@ -513,7 +514,7 @@ void RealLifeTest(int QDs, int waveguideLayers, double angle, int raysPerQD = 10
 	double xStart = -(cos(radians) * emitterLength) + endX * 0.95;
 	double yStart = sin(radians) * emitterLength + sourceHeight;
 
-	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, true));
+	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new AM15GWavelengthGenerator(), true));
 
 	std::vector<double> qdPositionsX = linspace(startX, endX, QDs + 2);
 

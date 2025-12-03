@@ -13,6 +13,9 @@
     <Filter Include="Distributions">
       <UniqueIdentifier>{7565515f-0931-4db6-aa19-81d1e73e4566}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WavelengthGenerators">
+      <UniqueIdentifier>{1747d3ef-44ae-44ba-a436-e58f8a106042}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mirror.h">
@@ -45,7 +48,6 @@
     <ClInclude Include="RaySource.h">
       <Filter>RaySource</Filter>
     </ClInclude>
-    <ClInclude Include="SolarSource.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RayHit.h" />
@@ -64,6 +66,18 @@
     <ClInclude Include="FYDPSims.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="NE451Sims.h" />
+    <ClInclude Include="ConstantWavelengthGenerator.h">
+      <Filter>WavelengthGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="AM15GWavelengthGenerator.h">
+      <Filter>WavelengthGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalWavelengthGenerator.h">
+      <Filter>WavelengthGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="WavelengthGenerator.h">
+      <Filter>WavelengthGenerators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -91,8 +105,10 @@
     <None Include="80DegGaussian.json">
       <Filter>Distributions</Filter>
     </None>
-    <None Include="AM15_spectrum.json">
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="AM15_spectrum.json">
       <Filter>Distributions</Filter>
-    </None>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

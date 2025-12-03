@@ -82,7 +82,9 @@
     <CudaCompile Include="kernel.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AM15GWavelengthGenerator.h" />
     <ClInclude Include="ConeLight.h" />
+    <ClInclude Include="ConstantWavelengthGenerator.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DisturbedSegment.h" />
     <ClInclude Include="Frame.h" />
@@ -90,6 +92,7 @@
     <ClInclude Include="GaussianDistribution.h" />
     <ClInclude Include="Mirror.h" />
     <ClInclude Include="NE451Sims.h" />
+    <ClInclude Include="NormalWavelengthGenerator.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectBounds.h" />
     <ClInclude Include="ObjectNode.h" />
@@ -100,11 +103,11 @@
     <ClInclude Include="RaySource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Segment.h" />
-    <ClInclude Include="SolarSource.h" />
     <ClInclude Include="Target.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Wave.h" />
+    <ClInclude Include="WavelengthGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="10DegGaussian.json" />
@@ -115,7 +118,11 @@
     <None Include="60DegGaussian.json" />
     <None Include="70DegGaussian.json" />
     <None Include="80DegGaussian.json" />
-    <None Include="AM15_spectrum.json" />
+    <CopyFileToFolders Include="AM15_spectrum.json">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
