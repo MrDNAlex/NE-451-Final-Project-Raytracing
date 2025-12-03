@@ -33,9 +33,9 @@ public:
 		Type = "Object";
 	}
 
-	void AddSegment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndex)
+	void AddSegment(double x1, double y1, double x2, double y2, std::function<double(double)> refractiveIndex, PerturbanceGenerator* generator)
 	{
-		Segments.emplace_back(x1, y1, x2, y2, refractiveIndex);
+		Segments.emplace_back(x1, y1, x2, y2, refractiveIndex, generator);
 	}
 
 	void BVH()

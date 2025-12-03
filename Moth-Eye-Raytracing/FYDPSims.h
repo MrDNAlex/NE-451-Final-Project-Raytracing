@@ -70,7 +70,7 @@ Scene CreateWaveguideBlock(std::string name, int waveguideLayers, double startX 
 
 		Object* obj = new Object();
 
-		obj->AddSegment(startX, wy, endX, wy, [n](double) {return n;});
+		obj->AddSegment(startX, wy, endX, wy, [n](double) {return n;}, new ConstantPerturbance(0));
 
 		scene.AddObject(obj);
 	}
@@ -105,7 +105,7 @@ void QDInternalWaveUnitCell(int QDs, int rays)
 	double endY = 0.0;
 	double depth = -200.0;
 
-	scene.AddObject(new Wave(startX, startY, endX, endY, waveResolution, [](double x, double y) { return MothEyeRefractiveIndex(y); }, A, B, C, D));
+	scene.AddObject(new Wave(startX, startY, endX, endY, waveResolution, [](double x, double y) { return MothEyeRefractiveIndex(y); }, new ConstantPerturbance(0), A, B, C, D));
 	scene.AddObject(new Mirror(startX, startY, startX, depth));
 	scene.AddObject(new Mirror(endX, startY, endX, depth));
 	scene.AddObject(new Target(startX, depth, endX, depth));
@@ -147,7 +147,7 @@ void ConeWaveUnitCell(int QDs, int rays)
 	double endY = 0.0;
 	double depth = -200.0;
 
-	scene.AddObject(new Wave(startX, startY, endX, endY, waveResolution, [](double x, double y) { return MothEyeRefractiveIndex(y); }, A, B, C, D));
+	scene.AddObject(new Wave(startX, startY, endX, endY, waveResolution, [](double x, double y) { return MothEyeRefractiveIndex(y); }, new ConstantPerturbance(0), A, B, C, D));
 	scene.AddObject(new Mirror(startX, startY, startX, depth));
 	scene.AddObject(new Mirror(endX, startY, endX, depth));
 	scene.AddObject(new Target(startX, depth, endX, depth));

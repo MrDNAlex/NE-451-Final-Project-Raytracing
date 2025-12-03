@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "ConstantPerturbance.h"
 class Target : public Object
 {
 public:
@@ -11,7 +12,7 @@ public:
 	Target(double x1, double y1, double x2, double y2) : Object()
 	{
 		this->Type = "Target";
-		this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0;});
+		this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0;}, new ConstantPerturbance(0));
 
 		this->CapturedPower = 0.0;
 		this->CapturedRays = 0.0;

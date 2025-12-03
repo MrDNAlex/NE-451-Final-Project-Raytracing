@@ -31,7 +31,7 @@ public:
 
 	double GetPerturbance()
 	{
-		PerturbanceGen->GeneratePerturbance();
+		return PerturbanceGen->GeneratePerturbance();
 	}
 
 	Vec2 GetNormal(bool left = true, bool perturb = false)
