@@ -110,14 +110,6 @@
     <ClInclude Include="WavelengthGenerator.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="10DegGaussian.json" />
-    <None Include="20DegGaussian.json" />
-    <None Include="30DegGaussian.json" />
-    <None Include="40DegGaussian.json" />
-    <None Include="50DegGaussian.json" />
-    <None Include="60DegGaussian.json" />
-    <None Include="70DegGaussian.json" />
-    <None Include="80DegGaussian.json" />
     <CopyFileToFolders Include="AM15_spectrum.json">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>

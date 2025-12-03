@@ -81,30 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="10DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="20DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="30DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="40DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="50DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="60DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="70DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
-    <None Include="80DegGaussian.json">
-      <Filter>Distributions</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="AM15_spectrum.json">

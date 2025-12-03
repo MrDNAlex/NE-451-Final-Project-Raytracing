@@ -22,8 +22,6 @@ public:
 
 	void LoadDistribution()
 	{
-		std::cout << "Loading AM1.5G Spectrum from JSON file...\n";
-
 		std::ifstream file("AM15_spectrum.json");
 		if (!file.is_open()) {
 			std::cerr << "Error: could not open JSON file\n";
@@ -34,16 +32,10 @@ public:
 
 		file >> AMDist;
 
-		std::cout << "Loaded JSON";
-
 		std::vector<double> probability = AMDist["Probability"].get<std::vector<double>>();
-
-		std::cout << "Got Distribution\n";
 
 		Wavelengths = AMDist["Wavelength"].get<std::vector<double>>();
 		Distribution = std::discrete_distribution<int>(probability.begin(), probability.end());
-
-		std::cout << "AM1.5G Spectrum loaded successfully.\n";
 	}
 
 	double GenerateWavelength() override

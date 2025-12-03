@@ -514,7 +514,7 @@ void RealLifeTest(int QDs, int waveguideLayers, double angle, int raysPerQD = 10
 	double xStart = -(cos(radians) * emitterLength) + endX * 0.95;
 	double yStart = sin(radians) * emitterLength + sourceHeight;
 
-	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new AM15GWavelengthGenerator(), true));
+	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), true));
 
 	std::vector<double> qdPositionsX = linspace(startX, endX, QDs + 2);
 
