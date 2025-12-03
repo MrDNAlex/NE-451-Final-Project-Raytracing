@@ -23,7 +23,7 @@ int main()
 	// Functions to Run
 	//RunMaxCaptureAngleWaveguide();
 	//RunQDInternalReflection();
-	//RunRealLifeTests();
+	RunRealLifeTests();
 	//RunWaveCalculations();
 
 	//GaussianDistribution gaus = GaussianDistribution(0, 5);
@@ -61,11 +61,6 @@ int main()
 	//
 	//	depth++;
 	//}
-
-	CreateFolder("Hello");
-	CreateFolder("Hello-World");
-	CreateFolder("Hello-World/Hello");
-	CreateFolder("Hello-World/Hello");
 
 
 	std::cout << "Press ENTER to exit...";

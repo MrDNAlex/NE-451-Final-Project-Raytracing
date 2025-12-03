@@ -26,8 +26,17 @@ public:
 		double DestroyedPower = 0.0;
 
 		int CapturedRays = 0;
-
 		double CapturedPower = 0.0;
+
+		double InitializationTimeMS = 0.0;
+		double RenderTimeMS = 0.0;
+		double SaveTimeMS = 0.0;
+		double AccumulationTimeMS = 0.0;
+
+		int NumberOfFrames = 0;
+		int NumberOfSegments = 0;
+
+		std::string Name = "SceneStats";
 
 		json ToJSON()
 		{
@@ -40,6 +49,15 @@ public:
 			j["DestroyedPower"] = DestroyedPower;
 			j["CapturedRays"] = CapturedRays;
 			j["CapturedPower"] = CapturedPower;
+			j["InitializationTimeMS"] = InitializationTimeMS;
+			j["RenderTimeMS"] = RenderTimeMS;
+			j["SaveTimeMS"] = SaveTimeMS;
+			j["AccumulationTimeMS"] = AccumulationTimeMS;
+			j["NumberOfFrames"] = NumberOfFrames;
+			j["NumberOfSegments"] = NumberOfSegments;
+			j["TotalNumberOfRays"] = CapturedRays + DestroyedRays + LostRays;
+			j["TotalSimTimeMS"] = InitializationTimeMS + RenderTimeMS + SaveTimeMS + AccumulationTimeMS;
+			j["Name"] = Name;
 			return j;
 		}
 	};
@@ -67,7 +85,6 @@ public:
 	~Scene() {
 		for (auto* p : Objects)    delete p;
 		for (auto* p : RaySources) delete p;
-		// Rays and Frames are values => auto-freed
 	}
 
 	Scene(std::string fileName)
@@ -90,7 +107,7 @@ public:
 
 	void AddRays(std::vector<Ray> rays)
 	{
-		this->Rays.reserve(this->Rays.size() + rays.size()); // capacity only
+		this->Rays.reserve(this->Rays.size() + rays.size());
 		this->Rays.insert(this->Rays.end(), rays.begin(), rays.end());
 	}
 
@@ -104,8 +121,18 @@ public:
 		this->RaySources.push_back(source);
 	}
 
+	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	{
+		this->Initialize(debug);	
+		this->Bake(saveJSON, debug, saveAnimation);
+		this->AccumulateStats();
+		this->Save(saveJSON, debug, saveAnimation);
+	}
+
 	void Initialize(bool debug)
 	{
+		auto start = std::chrono::high_resolution_clock::now();
+
 		if (debug)
 		{
 			std::cout << "Initializing Scene" << std::endl;
@@ -127,22 +154,7 @@ public:
 			if (debug)
 				std::cout << "Building BVH for Object " << j << std::endl;
 
-			// Start timer
-			//auto start = std::chrono::high_resolution_clock::now();
-
 			this->Objects[j]->BVH();
-
-			// End timer
-			//auto end = std::chrono::high_resolution_clock::now();
-
-			// Compute duration in milliseconds (you can change to microseconds if you want)
-			//auto durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-			//if (debug)
-			//{
-			//	std::cout << "Built BVH for Object " << j
-			//		<< " in " << durationMs << " ms" << std::endl;
-			//}
 		}
 
 		double totalPower = 0.0;
@@ -155,13 +167,16 @@ public:
 		Stats.StartRays = this->Rays.size();
 		Stats.StartPower = totalPower;
 
+		auto end = std::chrono::high_resolution_clock::now();
+		Stats.InitializationTimeMS = std::chrono::duration<double, std::milli>(end - start).count();
+
 		if (debug)
-			std::cout << "Finished Initializing Scene" << std::endl;
+			std::cout << "Finished Initializing Scene in " << Stats.InitializationTimeMS << " ms" << std::endl;
 	}
 
-	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	void Bake(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
 	{
-		this->Initialize(debug);
+		auto start = std::chrono::high_resolution_clock::now();
 
 		if (debug)
 			std::cout << "Rendering Scene" << std::endl;
@@ -199,8 +214,20 @@ public:
 
 		AddFrame(frame);
 
+		auto end = std::chrono::high_resolution_clock::now();
+
+		Stats.RenderTimeMS = std::chrono::duration<double, std::milli>(end - start).count();
+
 		if (debug)
-			std::cout << "Rendering Complete" << std::endl;
+			std::cout << "Rendering Complete in " << Stats.RenderTimeMS << " ms" << std::endl;
+	}
+
+	void AccumulateStats()
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+
+		Stats.NumberOfFrames = this->Frames.size();
+		Stats.Name = FileName;
 
 		//Getting Stats
 		for (int i = 0; i < this->Frames.size(); i++)
@@ -220,17 +247,26 @@ public:
 				Stats.CapturedPower += target->CapturedPower;
 				Stats.CapturedRays += target->CapturedRays;
 			}
+
+			Stats.NumberOfSegments += this->Objects[j]->Segments.size();
 		}
 
+		auto end = std::chrono::high_resolution_clock::now();
+
+		Stats.AccumulationTimeMS += std::chrono::duration<double, std::milli>(end - start).count();
+	}
+
+	void Save(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	{
 		if (!saveJSON)
 			return;
 
 		if (debug)
 			std::cout << "Saving..." << std::endl;
 
-		json j;
+		auto startSave = std::chrono::high_resolution_clock::now();
 
-		j["Stats"] = Stats.ToJSON();
+		json j;
 
 		j["Geometry"] = json::array();
 
@@ -249,6 +285,12 @@ public:
 
 		if (debug)
 			std::cout << "Converted To JSON, Dumping..." << std::endl;
+
+		auto endSave = std::chrono::high_resolution_clock::now();
+
+		Stats.SaveTimeMS += std::chrono::duration<double, std::milli>(endSave - startSave).count();
+
+		j["Stats"] = Stats.ToJSON();
 
 		//Save the File 
 		std::ofstream file(FileName + ".json");
