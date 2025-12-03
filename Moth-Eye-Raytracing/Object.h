@@ -25,10 +25,20 @@ public:
 
 		Vec2 MaxBound;
 
+		Segment Edges[4];
+
 		ObjectBounds()
+			: MinBound(std::numeric_limits<double>::max(),
+				std::numeric_limits<double>::max()),
+			MaxBound(std::numeric_limits<double>::lowest(),
+				std::numeric_limits<double>::lowest()),
+			Edges{
+				Segment(0,0,0,0, [](double) { return 1.0; }),
+				Segment(0,0,0,0, [](double) { return 1.0; }),
+				Segment(0,0,0,0, [](double) { return 1.0; }),
+				Segment(0,0,0,0, [](double) { return 1.0; })
+				}
 		{
-			MinBound = Vec2(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-			MaxBound = Vec2(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
 		}
 
 		void GrowToInclude(Segment* segment)
@@ -38,6 +48,11 @@ public:
 
 			MaxBound.X = std::max(MaxBound.X, std::max(segment->A.X, segment->B.X));
 			MaxBound.Y = std::max(MaxBound.Y, std::max(segment->A.Y, segment->B.Y));
+
+			Edges[0] = Segment(MinBound.X, MinBound.Y, MaxBound.X, MinBound.Y, [](double) {return 1.0; });
+			Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; });
+			Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; });
+			Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; });
 		}
 
 		bool LargestDimensionIsX()
@@ -61,19 +76,31 @@ public:
 		bool IsInLeftNode(Segment* segment, bool xLargestDim, double center)
 		{
 			if (xLargestDim)
-			{
-				double segCenterX = 0.5 * (segment->A.X + segment->B.X);
-				return segCenterX <= center;
-			}
+				return segment->GetCenterX() <= center;
 			else
-			{
-				double segCenterY = 0.5 * (segment->A.Y + segment->B.Y);
-				return segCenterY <= center;
-			}
+				return segment->GetCenterY() <= center;
 		}
 
+		bool Intersects(Ray* ray)
+		{
+			RayHit hit1 = Edges[0].Intersect(ray);
+			if (hit1.Hit)
+				return true;
 
-		//Create an Intersect Function
+			RayHit hit2 = Edges[1].Intersect(ray);
+			if (hit2.Hit)
+				return true;
+
+			RayHit hit3 = Edges[2].Intersect(ray);
+			if (hit3.Hit)
+				return true;
+
+			RayHit hit4 = Edges[3].Intersect(ray);
+			if (hit4.Hit)
+				return true;
+
+			return false;
+		}
 	};
 
 	class ObjectNode
@@ -84,8 +111,6 @@ public:
 
 		ObjectNode* RightNode;
 
-		//Object* Root;
-
 		std::vector<Segment*> Segments;
 
 		ObjectBounds Bounds;
@@ -95,17 +120,15 @@ public:
 			Segments = std::vector<Segment*>();
 			LeftNode = nullptr;
 			RightNode = nullptr;
-			//Root = root;
 			Bounds = ObjectBounds();
 		}
 
 		~ObjectNode()
 		{
-			std::cout << "Deleting ObjectNode" << std::endl;
-			//if (LeftNode != nullptr)
-			//	delete LeftNode;
-			//if (RightNode != nullptr)
-			//	delete RightNode;
+			if (LeftNode != nullptr)
+				delete LeftNode;
+			if (RightNode != nullptr)
+				delete RightNode;
 		}
 	};
 
@@ -115,7 +138,7 @@ public:
 
 	ObjectNode Root;
 
-	const int MAX_DEPTH = 10;
+	const int MAX_DEPTH = 50;
 
 	Object() : Root()
 	{
@@ -142,7 +165,7 @@ public:
 	void Split(ObjectNode& parent, int depth = 0)
 	{
 		//Base Case
-		if (depth == MAX_DEPTH || parent.Segments.size() <= 1)
+		if (depth == MAX_DEPTH || parent.Segments.size() <= depth * 4)
 			return;
 
 		bool isSplitX = parent.Bounds.LargestDimensionIsX();
@@ -155,21 +178,13 @@ public:
 		{
 			bool isInLeftNode = parent.Bounds.IsInLeftNode(segment, isSplitX, center);
 			if (isInLeftNode)
-			{
 				leftSegments.push_back(segment);
-			}
 			else
-			{
 				rightSegments.push_back(segment);
-			}
-				
 		}
 
 		if (leftSegments.empty() || rightSegments.empty())
-		{
-			std::cout << "Warning: BVH Split resulted in empty node at depth " << depth << std::endl;
 			return;
-		}
 
 		parent.LeftNode = new ObjectNode();
 		parent.RightNode = new ObjectNode();
@@ -188,30 +203,81 @@ public:
 
 		Split(*parent.LeftNode, depth + 1);
 		Split(*parent.RightNode, depth + 1);
-
-		//Needs to be Implemented
 	}
+
+	//RayHit Intersect(Ray* ray)
+	//{
+	//	double minT = INFINITY;
+	//	Segment* closestSegment = nullptr;
+	//
+	//	for (Segment& segment : Segments)
+	//	{
+	//		RayHit hit = segment.Intersect(ray);
+	//
+	//		if (hit.Hit && hit.Distance < minT)
+	//		{
+	//			minT = hit.Distance;
+	//			closestSegment = &segment;
+	//		}
+	//	}
+	//
+	//	if (closestSegment == nullptr)
+	//		return RayHit(false, 0.0, nullptr);
+	//	else
+	//		return RayHit(true, minT, closestSegment);
+	//}
 
 	RayHit Intersect(Ray* ray)
 	{
-		double minT = INFINITY;
-		Segment* closestSegment = nullptr;
+		return IntersectNode(&Root, ray);
+	}
 
-		for (Segment& segment : Segments)
+	RayHit IntersectNode(ObjectNode* node, Ray* ray)
+	{
+		if (node == nullptr)
+			return RayHit(false, 0.0, nullptr);
+
+		if (!node->Bounds.Intersects(ray))
+			return RayHit(false, 0.0, nullptr);
+
+		if (node->LeftNode == nullptr && node->RightNode == nullptr)
 		{
-			RayHit hit = segment.Intersect(ray);
+			double minT = INFINITY;
+			Segment* closestSegment = nullptr;
 
-			if (hit.Hit && hit.Distance < minT)
+			for (Segment* segment : node->Segments)
 			{
-				minT = hit.Distance;
-				closestSegment = &segment;
+				RayHit hit = segment->Intersect(ray);
+
+				if (hit.Hit && hit.Distance < minT)
+				{
+					minT = hit.Distance;
+					closestSegment = segment;
+				}
 			}
+
+			if (closestSegment == nullptr)
+				return RayHit(false, 0.0, nullptr);
+			else
+				return RayHit(true, minT, closestSegment);
 		}
 
-		if (closestSegment == nullptr)
-			return RayHit(false, 0.0, nullptr);
+		RayHit leftHit = IntersectNode(node->LeftNode, ray);
+		RayHit rightHit = IntersectNode(node->RightNode, ray);
+
+		if (leftHit.Hit && rightHit.Hit)
+		{
+			if (leftHit.Distance < rightHit.Distance)
+				return leftHit;
+			else
+				return rightHit;
+		}
+		else if (leftHit.Hit)
+			return leftHit;
+		else if (rightHit.Hit)
+			return rightHit;
 		else
-			return RayHit(true, minT, closestSegment);
+			return RayHit(false, 0.0, nullptr);
 	}
 
 	virtual std::vector<Ray> InteractWithRay(Segment* segment, Ray* ray)

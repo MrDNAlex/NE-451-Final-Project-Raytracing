@@ -112,6 +112,16 @@ public:
 		ray->Direction = newDirection;
 	}
 
+	double GetCenterX()
+	{
+		return 0.5 * (A.X + B.X);
+	}
+
+	double GetCenterY()
+	{
+		return 0.5 * (A.Y + B.Y);
+	}
+
 	json ToJSON()
 	{
 		json j;

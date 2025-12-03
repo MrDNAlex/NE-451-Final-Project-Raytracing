@@ -509,7 +509,7 @@ void RealLifeTest(int QDs, int waveguideLayers, double angle, int raysPerQD = 10
 	double sourceHeight = 300.0;
 	int QDResolution = 250;
 
-	std::string name = "RealLifeQD" + std::to_string(QDs) + "Waveguide" + std::to_string(waveguideLayers) + "Angle" + std::to_string(angle) + "UnitCell";
+	std::string name = "RealLifeQD" + std::to_string(QDs) + "Waveguide" + std::to_string(waveguideLayers) + "Angle" + std::to_string(angle);
 
 	if (useMothEyeIndex)
 		name += "_MothEye";
@@ -653,7 +653,7 @@ int main()
 	// Functions to Run
 	//RunMaxCaptureAngleWaveguide();
 	//RunQDInternalReflection();
-	//RunRealLifeTests();
+	RunRealLifeTests();
 	//RunWaveCalculations();
 
 	//GaussianDistribution gaus = GaussianDistribution(0, 5);
@@ -670,28 +670,27 @@ int main()
 	//	std::cout << "Disturbed Normal : X = " << distNormal.X << ", Y = " << distNormal.Y << std::endl;
 	//}
 
-	Wave wave = Wave(0, 0, 1000, 0, 10000, [](double x, double y) { return MothEyeRefractiveIndex(y); }, 1, 1, 0, 0);
-
-	wave.BVH();
-
-	int depth = 0;
-
-	Object::ObjectNode node = wave.Root;
-
-	for (int i = 0; i < 10; i++)
-	{
-		std::cout << "Node " << i << " : MinX = " << node.Bounds.MinBound.X << ", MaxX = " << node.Bounds.MaxBound.X << ", MinY = " << node.Bounds.MinBound.Y << ", MaxY = " << node.Bounds.MaxBound.Y << ", Depth = " << depth << ", Segments = " << node.Segments.size() << std::endl;
-
-		if (node.LeftNode != nullptr)
-		{
-			std::cout << "Going Left" << std::endl;
-			node = *(node.LeftNode);
-		}	
-		else
-			break;
-
-		depth++;
-	}
+	//Wave wave = Wave(0, 0, 1000, 0, 10000, [](double x, double y) { return MothEyeRefractiveIndex(y); }, 1, 1, 0, 0);
+	//
+	//wave.BVH();
+	//
+	//int depth = 0;
+	//
+	//Object::ObjectNode node = wave.Root;
+	//
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	std::cout << "Node " << i << " : MinX = " << node.Bounds.MinBound.X << ", MaxX = " << node.Bounds.MaxBound.X << ", MinY = " << node.Bounds.MinBound.Y << ", MaxY = " << node.Bounds.MaxBound.Y << ", Depth = " << depth << ", Segments = " << node.Segments.size() << std::endl;
+	//
+	//	if (node.LeftNode != nullptr)
+	//	{
+	//		node = *(node.LeftNode);
+	//	}	
+	//	else
+	//		break;
+	//
+	//	depth++;
+	//}
 
 
 	std::cout << "Press ENTER to exit...";

@@ -8,6 +8,8 @@
 #include <fstream>
 #include "RaySource.h"
 #include "Target.h"
+#include <chrono>
+
 class Scene
 {
 public:
@@ -118,6 +120,29 @@ public:
 
 			if (debug)
 				std::cout << "Generated " << generatedRays.size() << " Rays from Source " << i << std::endl;
+		}
+
+		for (int j = 0; j < this->Objects.size(); j++)
+		{
+			if (debug)
+				std::cout << "Building BVH for Object " << j << std::endl;
+
+			// Start timer
+			//auto start = std::chrono::high_resolution_clock::now();
+
+			this->Objects[j]->BVH();
+
+			// End timer
+			//auto end = std::chrono::high_resolution_clock::now();
+
+			// Compute duration in milliseconds (you can change to microseconds if you want)
+			//auto durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+			//if (debug)
+			//{
+			//	std::cout << "Built BVH for Object " << j
+			//		<< " in " << durationMs << " ms" << std::endl;
+			//}
 		}
 
 		double totalPower = 0.0;
