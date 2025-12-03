@@ -55,6 +55,12 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="GaussianDistribution.h" />
+    <ClInclude Include="ObjectBounds.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectNode.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
