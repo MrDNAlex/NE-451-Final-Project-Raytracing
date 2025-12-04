@@ -5,14 +5,16 @@ class Target : public Object
 {
 public:
 
+	ConstantPerturbance PerturbanceGen;
+
 	double CapturedPower;
 
 	double CapturedRays;
 
-	Target(double x1, double y1, double x2, double y2) : Object()
+	Target(double x1, double y1, double x2, double y2) : Object(), PerturbanceGen(0)
 	{
 		this->Type = "Target";
-		this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0;}, new ConstantPerturbance(0));
+		this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0;}, &PerturbanceGen);
 
 		this->CapturedPower = 0.0;
 		this->CapturedRays = 0.0;

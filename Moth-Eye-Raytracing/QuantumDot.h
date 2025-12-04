@@ -6,11 +6,13 @@ class QuantumDot : public Object
 {
 public:
 
+	ConstantPerturbance PerturbanceGen;
+
 	Vec2 Center;
 
 	double Radius;
 
-	QuantumDot(double x, double y, double radius, int resolution) : Object(), Center(x, y), Radius(radius)
+	QuantumDot(double x, double y, double radius, int resolution) : Object(), Center(x, y), Radius(radius), PerturbanceGen(0)
 	{
 		Type = "QuantumDot";
 
@@ -24,7 +26,7 @@ public:
 			double x2 = this->Center.X + radius * cos(theta[(i + 1) % resolution]);
 			double y2 = this->Center.Y + radius * sin(theta[(i + 1) % resolution]);
 
-			this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0; }, new ConstantPerturbance(0));
+			this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0; }, &PerturbanceGen);
 		}
 	}
 

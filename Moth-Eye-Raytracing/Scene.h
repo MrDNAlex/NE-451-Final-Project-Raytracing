@@ -258,8 +258,11 @@ public:
 			Object* obj = source->GetObject();
 
 			if (obj->Segments.empty())
+			{
+				delete obj;
 				continue;
-
+			}
+			
 			Objects.push_back(obj);
 		}
 
