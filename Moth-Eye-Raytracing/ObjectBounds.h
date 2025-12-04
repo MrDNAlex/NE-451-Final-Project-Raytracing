@@ -5,7 +5,7 @@ class ObjectBounds
 {
 public:
 
-	ConstantPerturbance defaultPerturbance;
+	ConstantPerturbance DefaultPerturbance;
 
 	Vec2 MinBound;
 
@@ -20,12 +20,12 @@ public:
 			std::numeric_limits<double>::max()),
 		MaxBound(std::numeric_limits<double>::lowest(),
 			std::numeric_limits<double>::lowest()),
-		defaultPerturbance(0),
+		DefaultPerturbance(0),
 		Edges{
-			Segment(0,0,0,0, [](double) { return 1.0; }, &defaultPerturbance),
-			Segment(0,0,0,0, [](double) { return 1.0; }, &defaultPerturbance),
-			Segment(0,0,0,0, [](double) { return 1.0; }, &defaultPerturbance),
-			Segment(0,0,0,0, [](double) { return 1.0; }, &defaultPerturbance)
+			Segment(0,0,0,0, [](double) { return 1.0; }, &DefaultPerturbance),
+			Segment(0,0,0,0, [](double) { return 1.0; }, &DefaultPerturbance),
+			Segment(0,0,0,0, [](double) { return 1.0; }, &DefaultPerturbance),
+			Segment(0,0,0,0, [](double) { return 1.0; }, &DefaultPerturbance)
 			}
 	{
 	}
@@ -38,10 +38,10 @@ public:
 		MaxBound.X = std::max(MaxBound.X, std::max(segment->A.X, segment->B.X));
 		MaxBound.Y = std::max(MaxBound.Y, std::max(segment->A.Y, segment->B.Y));
 
-		Edges[0] = Segment(MinBound.X, MinBound.Y, MaxBound.X, MinBound.Y, [](double) {return 1.0; }, &defaultPerturbance);
-		Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; }, &defaultPerturbance);
-		Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; }, &defaultPerturbance);
-		Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; }, &defaultPerturbance);
+		Edges[0] = Segment(MinBound.X, MinBound.Y, MaxBound.X, MinBound.Y, [](double) {return 1.0; }, &DefaultPerturbance);
+		Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; }, &DefaultPerturbance);
+		Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; }, &DefaultPerturbance);
+		Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; }, &DefaultPerturbance);
 
 		Corners[0] = Vec2(MinBound.X, MinBound.Y);
 		Corners[1] = Vec2(MaxBound.X, MinBound.Y);

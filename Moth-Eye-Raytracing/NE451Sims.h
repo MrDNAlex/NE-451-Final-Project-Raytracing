@@ -233,7 +233,7 @@ std::string RunAMG15GLayerSweeps(std::string path, int numOfLayers, int numOfRay
 
 	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, numOfRays, new AM15GWavelengthGenerator(), new ConstantPerturbance(0)));
 
-	scene.Render(true, false, false, true, true, filePath);
+	scene.Render(true, false, false, true, false, filePath);
 
 	filePath += name;
 
@@ -272,7 +272,7 @@ std::string RunNormalPerturbance(std::string path, int numOfLayers, int numOfRay
 
 	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, numOfRays, new AM15GWavelengthGenerator(), new ConstantPerturbance(0)));
 
-	scene.Render(true, false, false, true, true, filePath);
+	scene.Render(true, false, false, true, false, filePath);
 
 	filePath += name;
 
@@ -311,7 +311,7 @@ std::string RunWavyNormalPerturbance(std::string path, int numOfLayers, int numO
 
 	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, numOfRays, new AM15GWavelengthGenerator(), new ConstantPerturbance(0)));
 
-	scene.Render(true, false, false, true, true, filePath);
+	scene.Render(true, false, false, true, false, filePath);
 
 	filePath += name;
 
@@ -327,13 +327,13 @@ void RunSimulationCategory1()
 
 	AM15GWavelengthGenerator wg = AM15GWavelengthGenerator();
 
-	int avg = 1; //5
+	int avg = 5; //5
 	int numOfRays = 100;
 	int maxLayers = 100; //100
 	int maxAngle = 60; //60
 
 	int angleStep = 20;
-	int layerStep = 20; //5
+	int layerStep = 5;
 	int wavelengthStep = 10;
 
 	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg;
@@ -411,13 +411,13 @@ void RunSimulationCategory2()
 
 	std::string filePath = "Simulations/Simulation2_AM15GSpectrum/";
 
-	int avg = 1; //5
+	int avg = 5; //5
 	int numOfRays = 10000;
 	int maxLayers = 100; //100
 	int maxAngle = 60; //60
 
 	int angleStep = 20;
-	int layerStep = 20;//5
+	int layerStep = 5;
 
 	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg;
 	int simIndex = 0;
@@ -481,16 +481,16 @@ void RunSimulationCategory3()
 
 	std::string filePath = "Simulations/Simulation3_NormalPerturbance/";
 
-	int avg = 1; //5
+	int avg = 5; //5
 	int numOfRays = 10000;
 	int maxLayers = 100; //100
 	int maxAngle = 60; //60
-	int maxPerturbanceDev = 7;
+	int maxPerturbanceDev = 8;
 
 	int angleStep = 20;
-	int layerStep = 20; //5
+	int layerStep = 5;
 
-	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg * maxPerturbanceDev;
+	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg * maxPerturbanceDev/2.0;
 	int simIndex = 0;
 
 	json j;
@@ -507,7 +507,7 @@ void RunSimulationCategory3()
 
 		CreateFolder(angleFilePath);
 
-		for (int p = 0; p <= maxPerturbanceDev; p++)
+		for (int p = 0; p <= maxPerturbanceDev; p+=2)
 		{
 			json j_perturbance;
 
@@ -565,16 +565,16 @@ void RunSimulationCategory4()
 
 	std::string filePath = "Simulations/Simulation4_WavyNormalPerturbance/";
 
-	int avg = 1;//5
+	int avg = 5;//5
 	int numOfRays = 10000;
 	int maxLayers = 100; //100
 	int maxAngle = 60; //60
-	int maxPerturbanceDev = 7;
+	int maxPerturbanceDev = 8;
 
 	int angleStep = 20;
-	int layerStep = 20;//5
+	int layerStep = 5;
 
-	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg * maxPerturbanceDev;
+	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg * maxPerturbanceDev/2.0;
 	int simIndex = 0;
 
 	json j;
@@ -591,7 +591,7 @@ void RunSimulationCategory4()
 
 		CreateFolder(angleFilePath);
 
-		for (int p = 0; p <= maxPerturbanceDev; p++)
+		for (int p = 0; p <= maxPerturbanceDev; p+=2)
 		{
 			json j_perturbance;
 
@@ -640,4 +640,40 @@ void RunSimulationCategory4()
 	std::ofstream file("Simulations/Simulation4_WavyNormalPerturbance/FilePaths.json");
 	file << j.dump(2);
 	file.close();
+}
+
+void RunSimulations()
+{
+	std::cout << "Select a simulation to run:\n";
+	std::cout << "1. Simulation 1\n";
+	std::cout << "2. Simulation 2\n";
+	std::cout << "3. Simulation 3\n";
+	std::cout << "4. Simulation 4\n";
+	std::cout << "Enter a number (1-4): ";
+
+	int choice;
+	std::cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		RunSimulationCategory1();
+		break;
+
+	case 2:
+		RunSimulationCategory2();
+		break;
+
+	case 3:
+		RunSimulationCategory3();
+		break;
+
+	case 4:
+		RunSimulationCategory4();
+		break;
+
+	default:
+		std::cout << "Invalid choice.\n";
+		break;
+	}
 }

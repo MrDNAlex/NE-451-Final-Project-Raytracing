@@ -60,10 +60,7 @@ int main()
 	//	depth++;
 	//}
 
-	RunSimulationCategory1();
-	RunSimulationCategory2();
-	RunSimulationCategory3();
-	RunSimulationCategory4();
+	RunSimulations();
 
 	std::cout << "Press ENTER to exit...";
 	std::cin.get();
