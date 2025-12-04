@@ -219,7 +219,7 @@ void MaxCaptureAngleWaveguide(int waveguideLayers, int numberOfAngles, double en
 		scene.AddObject(new Mirror(startX, 1400.0, startX, 0));
 		scene.AddObject(new Mirror(endX, 1400.0, endX, 0));
 
-		scene.AddRaySource(new DirectionalLight(xStart, yStart, 9900, 300, 1, new ConstantWavelengthGenerator(550)));
+		scene.AddRaySource(new DirectionalLight(xStart, yStart, 9900, 300, 1, new ConstantWavelengthGenerator(550), new ConstantPerturbance(0)));
 
 		scene.Render(false, false, false);
 
@@ -468,7 +468,7 @@ void RealLifeTestUnitCell(int QDs, int waveguideLayers, double angle, int raysPe
 	double xStart = -(cos(radians) * emitterLength) + endX * 0.95;
 	double yStart = sin(radians) * emitterLength + sourceHeight;
 
-	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), true));
+	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), new ConstantPerturbance(0), true));
 
 	std::vector<double> qdPositionsX = linspace(startX, endX, QDs + 2);
 
@@ -513,7 +513,7 @@ void RealLifeTest(int QDs, int waveguideLayers, double angle, int raysPerQD = 10
 	double xStart = -(cos(radians) * emitterLength) + endX * 0.95;
 	double yStart = sin(radians) * emitterLength + sourceHeight;
 
-	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), true));
+	scene.AddRaySource(new DirectionalLight(xStart, yStart, endX * 0.95, sourceHeight, raysPerQD, new ConstantWavelengthGenerator(550), new ConstantPerturbance(0), true));
 
 	std::vector<double> qdPositionsX = linspace(startX, endX, QDs + 2);
 
