@@ -21,7 +21,7 @@ int main()
 	// Functions to Run
 	//RunMaxCaptureAngleWaveguide();
 	//RunQDInternalReflection();
-	RunRealLifeTests();
+	//RunRealLifeTests();
 	//RunWaveCalculations();
 
 	//GaussianDistribution gaus = GaussianDistribution(0, 5);
@@ -60,6 +60,10 @@ int main()
 	//	depth++;
 	//}
 
+	RunSimulationCategory1();
+	RunSimulationCategory2();
+	RunSimulationCategory3();
+	RunSimulationCategory4();
 
 	std::cout << "Press ENTER to exit...";
 	std::cin.get();
