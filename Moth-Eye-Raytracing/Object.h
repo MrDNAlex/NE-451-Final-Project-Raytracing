@@ -114,6 +114,26 @@ public:
 	//		return RayHit(true, minT, closestSegment);
 	//}
 
+	//Create a Function to Get Closest Corner of Bounds
+
+	double ShortestDistanceSqr(Ray* ray)
+	{
+		double shortestDistance = std::numeric_limits<double>::infinity();
+
+		for (Vec2 corner : Root.Bounds.Corners)
+		{
+			Vec2 toCorner = corner - ray->Origin;
+			double projectionLength = toCorner.Dot(ray->Direction);
+			Vec2 projectionPoint = ray->Origin + ray->Direction * projectionLength;
+			double distance = (corner - projectionPoint).MagnitudeSquared();
+
+			if (distance < shortestDistance)
+				shortestDistance = distance;
+		}
+
+		return shortestDistance;
+	}
+
 	RayHit Intersect(Ray* ray)
 	{
 		return IntersectNode(&Root, ray);
@@ -208,12 +228,16 @@ public:
 	{
 		json j;
 		j["Type"] = Type;
-		j["SegmentCount"] = Segments.size();
-		j["Segments"] = json::array();
+		
+		if (!Segments.empty())
+		{
+			j["SegmentCount"] = Segments.size();
+			j["Segments"] = json::array();
 
-		for (Segment& segment : Segments)
-			j["Segments"].push_back(segment.ToJSON());
-
+			for (Segment& segment : Segments)
+				j["Segments"].push_back(segment.ToJSON());
+		}
+		
 		return j;
 	}
 
@@ -225,8 +249,8 @@ protected:
 
 		Vec2 normal = segment->GetNormal(true, true);
 
-		ray->Direction.Normalize();
-
+		//ray->Direction.Normalize();
+		
 		double incidentCos = -normal.Dot(ray->Direction);
 
 		if (incidentCos < 0)

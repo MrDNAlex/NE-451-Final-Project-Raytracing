@@ -121,12 +121,12 @@ public:
 		this->RaySources.push_back(source);
 	}
 
-	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true, bool saveGeom = true, bool saveInitFrame = true, std::string filePath = "")
 	{
-		this->Initialize(debug);	
+		this->Initialize(debug);
 		this->Bake(saveJSON, debug, saveAnimation);
 		this->AccumulateStats();
-		this->Save(saveJSON, debug, saveAnimation);
+		this->Save(saveJSON, debug, saveAnimation, saveGeom, saveInitFrame, filePath);
 	}
 
 	void Initialize(bool debug)
@@ -251,12 +251,24 @@ public:
 			Stats.NumberOfSegments += this->Objects[j]->Segments.size();
 		}
 
+		for (int i = 0; i < this->RaySources.size(); i++)
+		{
+			RaySource* source = this->RaySources[i];
+
+			Object* obj = source->GetObject();
+
+			if (obj->Segments.empty())
+				continue;
+
+			Objects.push_back(obj);
+		}
+
 		auto end = std::chrono::high_resolution_clock::now();
 
 		Stats.AccumulationTimeMS += std::chrono::duration<double, std::milli>(end - start).count();
 	}
 
-	void Save(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	void Save(bool saveJSON = true, bool debug = true, bool saveAnimation = true, bool saveGeom = true, bool saveInitFrame = true, std::string filePath = "")
 	{
 		if (!saveJSON)
 			return;
@@ -268,11 +280,15 @@ public:
 
 		json j;
 
-		j["Geometry"] = json::array();
+		if (saveGeom)
+		{
+			j["Geometry"] = json::array();
 
-		for (Object* object : this->Objects)
-			j["Geometry"].push_back(object->ToJSON());
+			for (Object* object : this->Objects)
+				j["Geometry"].push_back(object->ToJSON());
 
+		}
+		
 		if (saveAnimation)
 		{
 			j["Frames"] = json::array();
@@ -281,7 +297,8 @@ public:
 				j["Frames"].push_back(frame.ToJSON());
 		}
 		else
-			j["Frames"].push_back(this->Frames[0].ToJSON());
+			if (saveInitFrame)
+				j["Frames"].push_back(this->Frames[0].ToJSON());
 
 		if (debug)
 			std::cout << "Converted To JSON, Dumping..." << std::endl;
@@ -293,7 +310,14 @@ public:
 		j["Stats"] = Stats.ToJSON();
 
 		//Save the File 
-		std::ofstream file(FileName + ".json");
+		std::string fullFilePath = "";
+
+		if (filePath == "")
+			fullFilePath = "./" + FileName + ".json";
+		else
+			fullFilePath = filePath + "/" + FileName + ".json";
+
+		std::ofstream file(fullFilePath);
 		file << j.dump(2);  // Pretty Indent of 4 Spaces
 		file.close();
 
@@ -313,16 +337,21 @@ public:
 		}
 
 		double minT = INFINITY;
+		double minTSqr = INFINITY;
 		Segment* closestSegment = nullptr;
 		Object* closestObject = nullptr;
 
 		for (Object* object : this->Objects)
 		{
+			if (minTSqr < object->ShortestDistanceSqr(ray))
+				continue;
+
 			RayHit hit = object->Intersect(ray);
 
 			if (hit.Hit && hit.Distance < minT)
 			{
 				minT = hit.Distance;
+				minTSqr = minT * minT;
 				closestSegment = hit.SegmentHit;
 				closestObject = object;
 			}

@@ -10,6 +10,8 @@ public:
 
 	Segment Edges[4];
 
+	Vec2 Corners[4];
+
 	ObjectBounds()
 		: MinBound(std::numeric_limits<double>::max(),
 			std::numeric_limits<double>::max()),
@@ -36,6 +38,11 @@ public:
 		Edges[1] = Segment(MaxBound.X, MinBound.Y, MaxBound.X, MaxBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
 		Edges[2] = Segment(MaxBound.X, MaxBound.Y, MinBound.X, MaxBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
 		Edges[3] = Segment(MinBound.X, MaxBound.Y, MinBound.X, MinBound.Y, [](double) {return 1.0; }, new ConstantPerturbance(0));
+
+		Corners[0] = Vec2(MinBound.X, MinBound.Y);
+		Corners[1] = Vec2(MaxBound.X, MinBound.Y);
+		Corners[2] = Vec2(MaxBound.X, MaxBound.Y);
+		Corners[3] = Vec2(MinBound.X, MaxBound.Y);
 	}
 
 	bool LargestDimensionIsX()
@@ -83,6 +90,16 @@ public:
 			return true;
 
 		return false;
+	}
+
+	Vec2 GetCorner(int index)
+	{
+		// 0: Bottom-Left
+		// 1: Bottom-Right
+		// 2: Top-Right
+		// 3: Top-Left
+
+		return Corners[index];
 	}
 };
 
