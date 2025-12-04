@@ -47,4 +47,9 @@ public:
 
 		return result;
 	}
+
+	virtual Object* GetObject()
+	{
+		return new Object();
+	}
 };

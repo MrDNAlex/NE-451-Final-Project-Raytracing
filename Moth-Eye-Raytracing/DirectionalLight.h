@@ -11,9 +11,21 @@ public:
 
 	bool Down;
 
-	DirectionalLight(double x1, double y1, double x2, double y2, int numberOfRays, WavelengthGenerator* wavelengthGenerator, bool down = true, double currentMedium = 1.0) : RaySource(numberOfRays, wavelengthGenerator, currentMedium), A(x1, y1), B(x2, y2)
+	PerturbanceGenerator* PerturbanceGen;
+
+	DirectionalLight(double x1, double y1, double x2, double y2, int numberOfRays, WavelengthGenerator* wavelengthGenerator, PerturbanceGenerator* perturbanceGen, bool down = true, double currentMedium = 1.0) : RaySource(numberOfRays, wavelengthGenerator, currentMedium), A(x1, y1), B(x2, y2)
 	{
 		this->Down = down;	
+		this->PerturbanceGen = perturbanceGen;
+	}
+
+	~DirectionalLight()
+	{
+		if (PerturbanceGen != nullptr)
+		{
+			delete PerturbanceGen;
+			PerturbanceGen = nullptr;
+		}
 	}
 
 	std::vector<Ray> GenerateRays() override
@@ -22,7 +34,7 @@ public:
 		std::vector<double> xs = linspace(A.X, B.X, NumberOfRays);
 		std::vector<double> ys = linspace(A.Y, B.Y, NumberOfRays);
 
-		Vec2 direction = (B - A).GetNormal();
+		Vec2 direction = (B - A).GetNormal().Rotate(PerturbanceGen->GeneratePerturbance());
 
 		direction.Normalize();
 
@@ -43,4 +55,15 @@ public:
 
 		return rays;
 	}
+
+	Object* GetObject() override
+	{
+		Object* obj = new Object();
+
+		obj->Type = "DirectionalLightSource";
+
+		obj->AddSegment(A.X, A.Y, B.X, B.Y, [](double) {return 1.0; }, this->PerturbanceGen);
+
+		return obj;
+	}	
 };
