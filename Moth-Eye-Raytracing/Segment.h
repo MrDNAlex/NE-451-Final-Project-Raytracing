@@ -6,6 +6,7 @@
 #include "cmath"
 #include <nlohmann/json.hpp>
 #include "PerturbanceGenerator.h"
+#include <iostream>
 using json = nlohmann::json;
 
 class Segment
@@ -83,8 +84,7 @@ public:
 		Vec2 direction = ray->Direction;
 		Vec2 normal = GetNormal(true, true);
 
-		direction.Normalize();
-		normal.Normalize();
+		//direction.Normalize();
 
 		Vec2 newDirection = direction - (normal * 2.0 * direction.Dot(normal));
 
