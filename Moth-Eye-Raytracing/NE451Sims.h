@@ -334,7 +334,7 @@ void RunSimulationCategory1()
 
 	int angleStep = 20;
 	int layerStep = 5;
-	int wavelengthStep = 10;
+	int wavelengthStep = 5;
 
 	int totalRuns = ((maxAngle / angleStep) + 1) * ((maxLayers - 5) / layerStep + 1) * avg;
 	int simIndex = 0;
@@ -645,10 +645,10 @@ void RunSimulationCategory4()
 void RunSimulations()
 {
 	std::cout << "Select a simulation to run:\n";
-	std::cout << "1. Simulation 1\n";
-	std::cout << "2. Simulation 2\n";
-	std::cout << "3. Simulation 3\n";
-	std::cout << "4. Simulation 4\n";
+	std::cout << "1. Simulation 1 - Wavelength Sweep\n";
+	std::cout << "2. Simulation 2 - AM15G Spectrum\n";
+	std::cout << "3. Simulation 3 - Segment Normal Perturbance + AM15G Spectrum\n";
+	std::cout << "4. Simulation 4 - Wavy Moth Eye Layers + Segment Normal Perturbance + AM15G Spectrum\n";
 	std::cout << "Enter a number (1-4): ";
 
 	int choice;
