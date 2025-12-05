@@ -203,7 +203,7 @@ std::string RunWavelengthSweep(std::string path, int numOfLayers, double wavelen
 
 	scene.Render(true, false, false, true, false, filePath);
 
-	filePath += name;
+	filePath += "/" + name;
 
 	return filePath;
 }
@@ -235,7 +235,7 @@ std::string RunAMG15GLayerSweeps(std::string path, int numOfLayers, int numOfRay
 
 	scene.Render(true, false, false, true, false, filePath);
 
-	filePath += name;
+	filePath += "/" + name;
 
 	return filePath;
 }
@@ -274,7 +274,7 @@ std::string RunNormalPerturbance(std::string path, int numOfLayers, int numOfRay
 
 	scene.Render(true, false, false, true, false, filePath);
 
-	filePath += name;
+	filePath += "/" + name;
 
 	return filePath;
 }
@@ -313,7 +313,7 @@ std::string RunWavyNormalPerturbance(std::string path, int numOfLayers, int numO
 
 	scene.Render(true, false, false, true, false, filePath);
 
-	filePath += name;
+	filePath += "/" + name;
 
 	return filePath;
 }
