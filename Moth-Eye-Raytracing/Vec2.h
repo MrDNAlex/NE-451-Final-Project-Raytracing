@@ -12,6 +12,12 @@ public:
 
 	double Y;
 
+	Vec2()
+	{
+		this->X = 0.0;
+		this->Y = 0.0;
+	}
+
 	Vec2(double x, double y)
 	{
 		this->X = x;
@@ -28,15 +34,31 @@ public:
 		return X * v2.X + Y * v2.Y;
 	}
 
+	double Magnitude()
+	{
+		return sqrt(MagnitudeSquared());
+	}
+
+	double MagnitudeSquared()
+	{
+		return X * X + Y * Y;
+	}
+
 	void Normalize()
 	{
-		double length = sqrt(X * X + Y * Y);
+		double length = Magnitude();
 
 		if (std::abs(length) < EPSILON)
 			length = EPSILON;
 
 		X /= length;
 		Y /= length;
+	}
+
+	bool IsNormalized()
+	{
+		double lengthSq = MagnitudeSquared();
+		return std::abs(lengthSq - 1.0) < EPSILON;
 	}
 
 	Vec2 GetNormal(bool left = true)

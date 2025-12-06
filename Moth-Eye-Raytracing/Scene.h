@@ -8,6 +8,8 @@
 #include <fstream>
 #include "RaySource.h"
 #include "Target.h"
+#include <chrono>
+
 class Scene
 {
 public:
@@ -24,8 +26,17 @@ public:
 		double DestroyedPower = 0.0;
 
 		int CapturedRays = 0;
-
 		double CapturedPower = 0.0;
+
+		double InitializationTimeMS = 0.0;
+		double RenderTimeMS = 0.0;
+		double SaveTimeMS = 0.0;
+		double AccumulationTimeMS = 0.0;
+
+		int NumberOfFrames = 0;
+		int NumberOfSegments = 0;
+
+		std::string Name = "SceneStats";
 
 		json ToJSON()
 		{
@@ -38,6 +49,15 @@ public:
 			j["DestroyedPower"] = DestroyedPower;
 			j["CapturedRays"] = CapturedRays;
 			j["CapturedPower"] = CapturedPower;
+			j["InitializationTimeMS"] = InitializationTimeMS;
+			j["RenderTimeMS"] = RenderTimeMS;
+			j["SaveTimeMS"] = SaveTimeMS;
+			j["AccumulationTimeMS"] = AccumulationTimeMS;
+			j["NumberOfFrames"] = NumberOfFrames;
+			j["NumberOfSegments"] = NumberOfSegments;
+			j["TotalNumberOfRays"] = CapturedRays + DestroyedRays + LostRays;
+			j["TotalSimTimeMS"] = InitializationTimeMS + RenderTimeMS + SaveTimeMS + AccumulationTimeMS;
+			j["Name"] = Name;
 			return j;
 		}
 	};
@@ -65,7 +85,6 @@ public:
 	~Scene() {
 		for (auto* p : Objects)    delete p;
 		for (auto* p : RaySources) delete p;
-		// Rays and Frames are values => auto-freed
 	}
 
 	Scene(std::string fileName)
@@ -88,7 +107,7 @@ public:
 
 	void AddRays(std::vector<Ray> rays)
 	{
-		this->Rays.reserve(this->Rays.size() + rays.size()); // capacity only
+		this->Rays.reserve(this->Rays.size() + rays.size());
 		this->Rays.insert(this->Rays.end(), rays.begin(), rays.end());
 	}
 
@@ -102,8 +121,18 @@ public:
 		this->RaySources.push_back(source);
 	}
 
+	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true, bool saveGeom = true, bool saveInitFrame = true, std::string filePath = "")
+	{
+		this->Initialize(debug);
+		this->Bake(saveJSON, debug, saveAnimation);
+		this->AccumulateStats();
+		this->Save(saveJSON, debug, saveAnimation, saveGeom, saveInitFrame, filePath);
+	}
+
 	void Initialize(bool debug)
 	{
+		auto start = std::chrono::high_resolution_clock::now();
+
 		if (debug)
 		{
 			std::cout << "Initializing Scene" << std::endl;
@@ -120,6 +149,14 @@ public:
 				std::cout << "Generated " << generatedRays.size() << " Rays from Source " << i << std::endl;
 		}
 
+		for (int j = 0; j < this->Objects.size(); j++)
+		{
+			if (debug)
+				std::cout << "Building BVH for Object " << j << std::endl;
+
+			this->Objects[j]->BVH();
+		}
+
 		double totalPower = 0.0;
 		for (int i = 0; i < this->Rays.size(); i++)
 		{
@@ -130,13 +167,16 @@ public:
 		Stats.StartRays = this->Rays.size();
 		Stats.StartPower = totalPower;
 
+		auto end = std::chrono::high_resolution_clock::now();
+		Stats.InitializationTimeMS = std::chrono::duration<double, std::milli>(end - start).count();
+
 		if (debug)
-			std::cout << "Finished Initializing Scene" << std::endl;
+			std::cout << "Finished Initializing Scene in " << Stats.InitializationTimeMS << " ms" << std::endl;
 	}
 
-	void Render(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
+	void Bake(bool saveJSON = true, bool debug = true, bool saveAnimation = true)
 	{
-		this->Initialize(debug);
+		auto start = std::chrono::high_resolution_clock::now();
 
 		if (debug)
 			std::cout << "Rendering Scene" << std::endl;
@@ -174,8 +214,20 @@ public:
 
 		AddFrame(frame);
 
+		auto end = std::chrono::high_resolution_clock::now();
+
+		Stats.RenderTimeMS = std::chrono::duration<double, std::milli>(end - start).count();
+
 		if (debug)
-			std::cout << "Rendering Complete" << std::endl;
+			std::cout << "Rendering Complete in " << Stats.RenderTimeMS << " ms" << std::endl;
+	}
+
+	void AccumulateStats()
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+
+		Stats.NumberOfFrames = this->Frames.size();
+		Stats.Name = FileName;
 
 		//Getting Stats
 		for (int i = 0; i < this->Frames.size(); i++)
@@ -195,23 +247,51 @@ public:
 				Stats.CapturedPower += target->CapturedPower;
 				Stats.CapturedRays += target->CapturedRays;
 			}
+
+			Stats.NumberOfSegments += this->Objects[j]->Segments.size();
 		}
 
+		for (int i = 0; i < this->RaySources.size(); i++)
+		{
+			RaySource* source = this->RaySources[i];
+
+			Object* obj = source->GetObject();
+
+			if (obj->Segments.empty())
+			{
+				delete obj;
+				continue;
+			}
+			
+			Objects.push_back(obj);
+		}
+
+		auto end = std::chrono::high_resolution_clock::now();
+
+		Stats.AccumulationTimeMS += std::chrono::duration<double, std::milli>(end - start).count();
+	}
+
+	void Save(bool saveJSON = true, bool debug = true, bool saveAnimation = true, bool saveGeom = true, bool saveInitFrame = true, std::string filePath = "")
+	{
 		if (!saveJSON)
 			return;
 
 		if (debug)
 			std::cout << "Saving..." << std::endl;
 
+		auto startSave = std::chrono::high_resolution_clock::now();
+
 		json j;
 
-		j["Stats"] = Stats.ToJSON();
+		if (saveGeom)
+		{
+			j["Geometry"] = json::array();
 
-		j["Geometry"] = json::array();
+			for (Object* object : this->Objects)
+				j["Geometry"].push_back(object->ToJSON());
 
-		for (Object* object : this->Objects)
-			j["Geometry"].push_back(object->ToJSON());
-
+		}
+		
 		if (saveAnimation)
 		{
 			j["Frames"] = json::array();
@@ -220,13 +300,27 @@ public:
 				j["Frames"].push_back(frame.ToJSON());
 		}
 		else
-			j["Frames"].push_back(this->Frames[0].ToJSON());
+			if (saveInitFrame)
+				j["Frames"].push_back(this->Frames[0].ToJSON());
 
 		if (debug)
 			std::cout << "Converted To JSON, Dumping..." << std::endl;
 
+		auto endSave = std::chrono::high_resolution_clock::now();
+
+		Stats.SaveTimeMS += std::chrono::duration<double, std::milli>(endSave - startSave).count();
+
+		j["Stats"] = Stats.ToJSON();
+
 		//Save the File 
-		std::ofstream file(FileName + ".json");
+		std::string fullFilePath = "";
+
+		if (filePath == "")
+			fullFilePath = "./" + FileName + ".json";
+		else
+			fullFilePath = filePath + "/" + FileName + ".json";
+
+		std::ofstream file(fullFilePath);
 		file << j.dump(2);  // Pretty Indent of 4 Spaces
 		file.close();
 
@@ -246,16 +340,21 @@ public:
 		}
 
 		double minT = INFINITY;
+		double minTSqr = INFINITY;
 		Segment* closestSegment = nullptr;
 		Object* closestObject = nullptr;
 
 		for (Object* object : this->Objects)
 		{
+			if (minTSqr < object->ShortestDistanceSqr(ray))
+				continue;
+
 			RayHit hit = object->Intersect(ray);
 
 			if (hit.Hit && hit.Distance < minT)
 			{
 				minT = hit.Distance;
+				minTSqr = minT * minT;
 				closestSegment = hit.SegmentHit;
 				closestObject = object;
 			}

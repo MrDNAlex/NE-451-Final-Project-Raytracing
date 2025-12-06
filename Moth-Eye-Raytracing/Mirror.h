@@ -4,10 +4,13 @@ class Mirror : public Object
 {
 public:
 
-	Mirror(double x1, double y1, double x2, double y2) : Object()
+	ConstantPerturbance PerturbanceGenerator;
+
+	Mirror(double x1, double y1, double x2, double y2) : Object(), PerturbanceGenerator(0)
 	{
-		this->AddSegment(x1, y1, x2, y2, 1.0);
 		Type = "Mirror";
+
+		this->AddSegment(x1, y1, x2, y2, [](double) {return 1.0;}, &PerturbanceGenerator);
 	}
 
 	std::vector<Ray> InteractWithRay(Segment* segment, Ray* ray) override

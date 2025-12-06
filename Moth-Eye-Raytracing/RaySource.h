@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2.h"
 #include "Ray.h"
+#include "WavelengthGenerator.h"
 class RaySource
 {
 public:
@@ -9,10 +10,22 @@ public:
 
 	double CurrentMedium;
 
-	RaySource(int numberOfRays, double currentMedium = 1.0)
+	WavelengthGenerator* WavelengthGen;
+
+	RaySource(int numberOfRays, WavelengthGenerator* wavelengthGenerator, double currentMedium = 1.0)
 	{
 		this->NumberOfRays = numberOfRays;
 		this->CurrentMedium = currentMedium;
+		this->WavelengthGen = wavelengthGenerator;
+	}
+
+	~RaySource()
+	{
+		if (WavelengthGen != nullptr)
+		{
+			delete WavelengthGen;
+			WavelengthGen = nullptr;
+		}
 	}
 
 	virtual std::vector<Ray> GenerateRays()
@@ -34,5 +47,9 @@ public:
 
 		return result;
 	}
-};
 
+	virtual Object* GetObject()
+	{
+		return new Object();
+	}
+};
